@@ -1,118 +1,348 @@
-<div id="view-lancamentos" class="view-content">
-    <div class="balance-card">
-        <span style="color: var(--text-gray)">SALDO ACUMULADO ATÉ <span id="label-mes-ano">---</span></span>
-        <h2 id="saldo-periodo" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanças Privadas - Weverson</title>
+    <style>
+        :root {
+            --bg-dark: #050a1a;
+            --card-dark: #0f172a;
+            --primary-blue: #0095ff;
+            --success-green: #00d28a;
+            --danger-red: #ff4d6d;
+            --warning-orange: #f59e0b;
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
+            --border: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+
+        /* Login */
+        #login-screen {
+            background: var(--card-dark);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            width: 320px;
+            margin-top: 50px;
+        }
+
+        /* Sistema */
+        #main-system { width: 100%; max-width: 1000px; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+        .stat-box.up { border-bottom: 4px solid var(--success-green); }
+        .stat-box.down { border-bottom: 4px solid var(--danger-red); }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab-btn {
+            background: none; border: none; color: var(--text-gray);
+            padding: 10px 20px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
+
+        .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
+        
+        /* Inputs e Forms */
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
+        input, select, button {
+            background: #1e293b; border: 1px solid var(--border); color: white;
+            padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box;
+        }
+
+        .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; }
+        .btn-warning { background: var(--warning-orange); border: none; font-weight: bold; cursor: pointer; color: #050a1a; }
+        .btn-logout { background: transparent; border: 1px solid var(--danger-red); color: var(--danger-red); padding: 5px 15px; cursor: pointer; border-radius: 8px; width: auto; font-size: 12px; }
+
+        .hidden { display: none !important; }
+        label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 6px; margin-top: 10px; text-transform: uppercase; }
+        
+        .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dotted var(--border); font-size: 14px; }
+        .maint-badge { background: #1e293b; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--warning-orange); border: 1px solid var(--warning-orange); }
+
+        .filter-section { display: flex; align-items: center; gap: 10px; }
+        .filter-section select { width: auto; padding: 8px; background: var(--card-dark); }
+        
+        .section-fixo { margin-top: 20px; padding: 15px; border: 1px dashed var(--warning-orange); border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <h2 style="margin-bottom: 5px;">Weverson</h2>
+    <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">Financeiro Privado</p>
+    <input type="text" id="user-input" placeholder="Usuário">
+    <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
+    <button class="btn-add" onclick="validaAcesso()">Entrar</button>
+</div>
+
+<div id="main-system" class="hidden">
+    <div class="header">
+        <div class="filter-section">
+            <select id="filtro-mes" onchange="renderizarTudo()">
+                <option value="01">Janeiro</option><option value="02" selected>Fevereiro</option><option value="03">Março</option>
+                <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+                <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+                <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+            <select id="filtro-ano" onchange="renderizarTudo()">
+                <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+            </select>
+        </div>
+        <button class="btn-logout" onclick="logout()">Sair</button>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-box up">
-            <small style="color: var(--text-gray)">RECEITAS NO MÊS</small>
-            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
-        </div>
-        <div class="stat-box down">
-            <small style="color: var(--text-gray)">DESPESAS NO MÊS</small>
-            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" id="tab-lancamentos" onclick="mudarAba('lancamentos')">Lançamentos</button>
+        <button class="tab-btn" id="tab-drivo" onclick="mudarAba('drivo')" style="color: var(--warning-orange)">🏍 DRIVO</button>
+        <button class="tab-btn" id="tab-perfil" onclick="mudarAba('perfil')">⚙ Perfil</button>
     </div>
 
-    <div class="form-grid">
-        <input type="text" id="desc" placeholder="Descrição">
-        <input type="number" id="valor" placeholder="R$">
-        <select id="tipo">
-            <option value="receita">Receita</option>
-            <option value="despesa">Despesa</option>
-        </select>
-        <button class="btn-add" onclick="adicionar()">Lançar</button>
-    </div>
-    
-    <div style="margin-bottom: 20px; padding: 10px; border: 1px dashed var(--border); border-radius: 8px;">
-        <small style="color: var(--warning-orange)">⚙️ CADASTRO FIXO (Repete todo mês)</small>
-        <div class="form-grid" style="margin-top: 10px;">
-            <input type="text" id="fixo-desc" placeholder="Ex: Aluguel">
-            <input type="number" id="fixo-valor" placeholder="R$">
-            <input type="number" id="fixo-dia" placeholder="Dia" min="1" max="31">
-            <button class="btn-warning" onclick="adicionarFixo()">+ Fixo</button>
+    <div id="view-lancamentos" class="view-content">
+        <div class="balance-card">
+            <span style="color: var(--text-gray)">SALDO ACUMULADO ATÉ O PERÍODO</span>
+            <h2 id="saldo-acumulado" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
         </div>
+
+        <div class="stats-grid">
+            <div class="stat-box up">
+                <small style="color: var(--text-gray)">RECEITAS NO MÊS</small>
+                <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+            <div class="stat-box down">
+                <small style="color: var(--text-gray)">DESPESAS NO MÊS</small>
+                <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <input type="text" id="desc" placeholder="Descrição">
+            <input type="number" id="valor" placeholder="R$">
+            <select id="tipo">
+                <option value="receita">Receita</option>
+                <option value="despesa">Despesa</option>
+            </select>
+            <button class="btn-add" onclick="adicionar()">Lançar</button>
+        </div>
+
+        <div class="section-fixo">
+            <small style="color: var(--warning-orange); font-weight: bold;">⚙️ LANÇAMENTOS FIXOS (TODO MÊS)</small>
+            <div class="form-grid" style="margin-top: 10px;">
+                <input type="text" id="fixo-desc" placeholder="Ex: Aluguel">
+                <input type="number" id="fixo-valor" placeholder="R$">
+                <input type="number" id="fixo-dia" placeholder="Dia">
+                <button class="btn-warning" onclick="adicionarFixo()">+ Fixo</button>
+            </div>
+        </div>
+
+        <div id="feed-atividades" style="margin-top: 20px;"></div>
     </div>
 
-    <div id="feed-atividades"></div>
+    <div id="view-drivo" class="view-content hidden">
+        <h3 style="color: var(--warning-orange)">Gestão Fazer 250</h3>
+        <div style="background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <label>Calculadora de Combustível (KM Rodado)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="number" id="km-inicial" placeholder="KM Inicial">
+                <input type="number" id="km-final" placeholder="KM Final">
+            </div>
+            <div id="resultado-viagem" style="font-size: 20px; font-weight: bold; color: var(--warning-orange); margin-top: 10px;">R$ 0,00</div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-warning" onclick="calcularDrivo()">Calcular</button>
+                <button id="btn-lancar-moto" class="btn-add" style="opacity: 0.5; cursor: not-allowed;" onclick="lancarGastoMoto()" disabled>Lançar Viagem</button>
+            </div>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px;">
+            <label>Manutenção da Moto</label>
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
+                <select id="maint-item">
+                    <option value="Troca de Óleo">Troca de Óleo</option><option value="Pneu">Pneu</option>
+                    <option value="Relação">Relação</option><option value="Freio">Freio</option><option value="Outros">Outros</option>
+                </select>
+                <input type="number" id="maint-km" placeholder="KM Atual">
+                <input type="number" id="maint-valor" placeholder="R$">
+            </div>
+            <button class="btn-add" style="margin-top: 10px; width: 100%;" onclick="lancarManutencao()">Registrar Manutenção</button>
+        </div>
+        <div id="feed-moto" style="margin-top: 20px;"></div>
+    </div>
+
+    <div id="view-perfil" class="view-content hidden">
+        <h3>⚙ Perfil e Configurações</h3>
+        <div style="max-width: 500px; margin-top: 15px;">
+            <label>Estado (UF)</label>
+            <select id="perfil-uf" onchange="carregarCidades()">
+                <option value="CE">Ceará</option><option value="MA">Maranhão</option>
+            </select>
+            <label>Cidade Atual</label>
+            <select id="perfil-cidade" onchange="buscarPrecoCombustivel()"></select>
+            <label>Autonomia da Moto (KM/L)</label>
+            <input type="number" id="perfil-autonomia" placeholder="Ex: 29">
+            <label>Preço da Gasolina (R$)</label>
+            <input type="number" id="perfil-preco-litro" step="0.01">
+            <button class="btn-add" style="margin-top: 20px;" onclick="salvarPerfil()">Salvar Configurações</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Novos bancos de dados no localStorage
+    const _0x1a2 = "d2V2ZXJzb24="; const _0x1b3 = "V2YwMjMyNDA="; 
     let db = JSON.parse(localStorage.getItem('financas_weverson')) || [];
     let db_fixos = JSON.parse(localStorage.getItem('fixos_weverson')) || [];
+    let db_moto = JSON.parse(localStorage.getItem('moto_weverson')) || [];
+    let perfil = JSON.parse(localStorage.getItem('perfil_weverson')) || { uf: 'CE', cidade: 'Fortaleza', autonomia: 29, preco: 6.15 };
+    
+    const cidadesDB = { "CE": ["Fortaleza", "Canindé", "Sobral", "Tianguá", "Crateús"], "MA": ["Imperatriz", "São Luís"] };
+
+    window.onload = function() {
+        if(sessionStorage.getItem('session_active') === 'true') showSystem();
+    }
+
+    function validaAcesso() {
+        if (btoa(document.getElementById('user-input').value) === _0x1a2 && btoa(document.getElementById('pass-input').value) === _0x1b3) {
+            sessionStorage.setItem('session_active', 'true'); showSystem();
+        } else alert("Credenciais Inválidas!");
+    }
+
+    function showSystem() {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-system').classList.remove('hidden');
+        document.body.style.alignItems = "flex-start";
+        carregarDadosPerfil(); renderizarTudo();
+    }
+
+    function renderizarTudo() { renderizar(); renderizarMoto(); }
+
+    function carregarCidades() {
+        const uf = document.getElementById('perfil-uf').value;
+        const sel = document.getElementById('perfil-cidade'); sel.innerHTML = '';
+        cidadesDB[uf].forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+        buscarPrecoCombustivel();
+    }
+
+    function buscarPrecoCombustivel() {
+        const p = { "Fortaleza": 6.15, "Imperatriz": 5.95, "Canindé": 6.30, "Sobral": 6.20 };
+        document.getElementById('perfil-preco-litro').value = p[document.getElementById('perfil-cidade').value] || 6.10;
+    }
+
+    function salvarPerfil() {
+        perfil = { uf: document.getElementById('perfil-uf').value, cidade: document.getElementById('perfil-cidade').value, autonomia: parseFloat(document.getElementById('perfil-autonomia').value), preco: parseFloat(document.getElementById('perfil-preco-litro').value) };
+        localStorage.setItem('perfil_weverson', JSON.stringify(perfil)); alert("Perfil Salvo!");
+    }
+
+    function carregarDadosPerfil() {
+        document.getElementById('perfil-uf').value = perfil.uf; carregarCidades();
+        document.getElementById('perfil-autonomia').value = perfil.autonomia; document.getElementById('perfil-preco-litro').value = perfil.preco;
+    }
+
+    function adicionar() {
+        const d = document.getElementById('desc').value; const v = parseFloat(document.getElementById('valor').value);
+        if (!d || isNaN(v)) return;
+        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc: d, valor: v, tipo: document.getElementById('tipo').value });
+        localStorage.setItem('financas_weverson', JSON.stringify(db)); renderizar();
+        document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
+    }
 
     function adicionarFixo() {
-        const desc = document.getElementById('fixo-desc').value;
-        const valor = parseFloat(document.getElementById('fixo-valor').value);
+        const d = document.getElementById('fixo-desc').value; const v = parseFloat(document.getElementById('fixo-valor').value);
         const dia = document.getElementById('fixo-dia').value;
-        const tipo = valor > 0 ? 'receita' : 'despesa'; // Defina pelo sinal ou mude o campo
-
-        if (!desc || isNaN(valor) || !dia) return alert("Preencha os dados fixos");
-
-        db_fixos.push({ desc, valor: Math.abs(valor), dia, tipo: document.getElementById('tipo').value });
-        localStorage.setItem('fixos_weverson', JSON.stringify(db_fixos));
-        alert("Transação fixa cadastrada!");
-        renderizar();
+        if (!d || isNaN(v) || !dia) return alert("Preencha os dados fixos");
+        db_fixos.push({ desc: d, valor: v, dia: dia, tipo: document.getElementById('tipo').value });
+        localStorage.setItem('fixos_weverson', JSON.stringify(db_fixos)); renderizar();
+        alert("Lançamento Fixo adicionado!");
     }
 
     function renderizar() {
-        const mesAlvo = parseInt(document.getElementById('filtro-mes').value);
-        const anoAlvo = parseInt(document.getElementById('filtro-ano').value);
-        
-        document.getElementById('label-mes-ano').innerText = `${mesAlvo}/${anoAlvo}`;
-
-        let saldoAcumulado = 0;
-        let receitasMes = 0;
-        let despesasMes = 0;
+        const mesAlvo = document.getElementById('filtro-mes').value;
+        const anoAlvo = document.getElementById('filtro-ano').value;
         const feed = document.getElementById('feed-atividades');
+        let saldoAcumulado = 0, receitasMes = 0, despesasMes = 0;
         feed.innerHTML = "";
 
-        // 1. Lógica de Acúmulo: Percorrer todos os meses desde o início até o mês selecionado
-        // Para simplificar, vamos filtrar o banco total
+        // Calcular Saldo Acumulado (Tudo até a data selecionada)
         db.forEach(t => {
-            const [d, m, a] = t.data.split('/').map(Number);
-            const dataTransacao = new Date(a, m - 1, d);
-            const dataFiltro = new Date(anoAlvo, mesAlvo - 1, 31);
-
-            if (dataTransacao <= dataFiltro) {
-                const v = t.tipo === 'receita' ? t.valor : -t.valor;
+            const [d, m, a] = t.data.split('/');
+            const v = t.tipo === 'receita' ? t.valor : -t.valor;
+            if (a < anoAlvo || (a === anoAlvo && m <= mesAlvo)) {
                 saldoAcumulado += v;
-
-                // Se for exatamente o mês que estamos vendo, alimenta o resumo
                 if (m === mesAlvo && a === anoAlvo) {
                     t.tipo === 'receita' ? receitasMes += t.valor : despesasMes += t.valor;
-                    feed.innerHTML += criarLinhaFeed(t);
+                    feed.innerHTML += `<div class="history-item"><div>${t.desc}<br><small>${t.data}</small></div><div style="color:${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div></div>`;
                 }
             }
         });
 
-        // 2. Processar Transações Fixas para o mês atual
+        // Adicionar Fixos ao cálculo (Eles contam para todos os meses)
         db_fixos.forEach(f => {
             const v = f.tipo === 'receita' ? f.valor : -f.valor;
-            
-            // Adiciona ao saldo acumulado (Simulação de que ela ocorreu)
-            saldoAcumulado += v; 
-            
-            // Adiciona ao resumo do mês visualizado
-            f.tipo === 'receita' ? receitasMes += f.valor : despesasMes += f.valor;
-            feed.innerHTML += `<div class="history-item" style="border-left: 3px solid var(--warning-orange); padding-left: 10px;">
-                <div>[FIXO] ${f.desc}<br><small>Todo dia ${f.dia}</small></div>
-                <div style="color:${f.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${f.valor.toFixed(2)}</div>
-            </div>`;
+            saldoAcumulado += v;
+            receitasMes += (f.tipo === 'receita' ? f.valor : 0);
+            despesasMes += (f.tipo === 'despesa' ? f.valor : 0);
+            feed.innerHTML += `<div class="history-item" style="border-left: 3px solid var(--warning-orange); padding-left: 10px;"><div>[FIXO] ${f.desc}<br><small>Todo dia ${f.dia}</small></div><div style="color:${f.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${f.valor.toFixed(2)}</div></div>`;
         });
 
-        // Atualiza Tela
-        document.getElementById('saldo-periodo').innerText = `R$ ${saldoAcumulado.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('saldo-acumulado').innerText = `R$ ${saldoAcumulado.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-receita').innerText = `R$ ${receitasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-despesa').innerText = `R$ ${despesasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
     }
 
-    function criarLinhaFeed(t) {
-        return `<div class="history-item">
-            <div>${t.desc}<br><small>${t.data}</small></div>
-            <div style="color:${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
-        </div>`;
+    function renderizarMoto() {
+        const mes = document.getElementById('filtro-mes').value;
+        const ano = document.getElementById('filtro-ano').value;
+        const feed = document.getElementById('feed-moto'); feed.innerHTML = "";
+        db_moto.filter(m => m.data.split('/')[1] === mes && m.data.split('/')[2] === ano).slice().reverse().forEach(m => {
+            feed.innerHTML += `<div class="history-item"><div>${m.data} - <small>${m.km} KM</small><br><span class="maint-badge">${m.detalhe}</span></div><span style="color:var(--warning-orange)">R$ ${m.valor.toFixed(2)}</span></div>`;
+        });
     }
+
+    function calcularDrivo() {
+        const dist = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
+        if(dist <= 0) return alert("KM inválido!");
+        const custo = (dist / perfil.autonomia) * perfil.preco;
+        document.getElementById('resultado-viagem').innerText = `R$ ${custo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        window.ultimoCalculo = custo;
+        document.getElementById('btn-lancar-moto').disabled = false; document.getElementById('btn-lancar-moto').style.opacity = "1";
+    }
+
+    function lancarGastoMoto() {
+        db_moto.push({ data: new Date().toLocaleDateString('pt-BR'), detalhe: 'Viagem', valor: window.ultimoCalculo, km: document.getElementById('km-final').value });
+        localStorage.setItem('moto_weverson', JSON.stringify(db_moto)); renderizarMoto();
+    }
+
+    function lancarManutencao() {
+        db_moto.push({ data: new Date().toLocaleDateString('pt-BR'), detalhe: document.getElementById('maint-item').value, valor: parseFloat(document.getElementById('maint-valor').value), km: document.getElementById('maint-km').value });
+        localStorage.setItem('moto_weverson', JSON.stringify(db_moto)); renderizarMoto();
+    }
+
+    function mudarAba(aba) {
+        document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('view-' + aba).classList.remove('hidden'); document.getElementById('tab-' + aba).classList.add('active');
+    }
+
+    function logout() { sessionStorage.removeItem('session_active'); window.location.reload(); }
 </script>
+</body>
+</html>
