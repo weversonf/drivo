@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanças Weverson - Sistema Fechado</title>
+    <title>Finanças Privadas - Weverson</title>
     <style>
         :root {
             --bg-dark: #050a1a;
@@ -22,15 +22,25 @@
             background-color: var(--bg-dark);
             color: var(--text-white);
             margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
 
-        .container { width: 100%; max-width: 1000px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        /* Tela de Login */
+        #login-screen {
+            background: var(--card-dark);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            width: 320px;
+        }
 
+        #main-system { width: 100%; max-width: 1000px; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
@@ -47,31 +57,37 @@
         .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
 
         .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
-        
         .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
+        
         input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
-            padding: 12px; border-radius: 8px; outline: none;
+            padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box;
         }
 
         .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; }
-        .btn-export { background: var(--success-green); border: none; font-weight: bold; cursor: pointer; color: #050a1a; padding: 10px 20px; border-radius: 8px; }
+        .btn-export { background: var(--success-green); border: none; font-weight: bold; cursor: pointer; color: #050a1a; padding: 10px 20px; border-radius: 8px; width: auto; }
 
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; color: var(--text-gray); padding: 12px; border-bottom: 2px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
 
         .drivo-card { border-left: 4px solid var(--warning-orange); padding: 20px; background: #1e293b; border-radius: 12px; margin-top: 20px; }
-        .calc-result { font-size: 24px; font-weight: bold; color: var(--warning-orange); margin-top: 10px; }
-        
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="login-screen">
+    <h2 style="margin-bottom: 5px;">Acesso Restrito</h2>
+    <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">Sistema Financeiro</p>
+    <input type="text" id="user-input" placeholder="Usuário" style="margin-bottom: 10px;">
+    <input type="password" id="pass-input" placeholder="Senha" style="margin-bottom: 20px;">
+    <button class="btn-add" onclick="validaAcesso()">Entrar</button>
+</div>
+
+<div id="main-system" class="hidden">
     <div class="header">
-        <h1>Financeiro Weverson</h1>
+        <h1>Fevereiro 2026</h1>
         <button class="btn-export" onclick="exportarCSV()">⬇ Exportar Excel</button>
     </div>
 
@@ -83,11 +99,11 @@
     <div class="stats-grid">
         <div class="stat-box">
             <small style="color: var(--text-gray)">ENTRADAS</small>
-            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold;">R$ 0,00</div>
         </div>
         <div class="stat-box">
             <small style="color: var(--text-gray)">SAÍDAS</small>
-            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold;">R$ 0,00</div>
         </div>
     </div>
 
@@ -99,8 +115,8 @@
 
     <div id="view-lancamentos" class="view-content">
         <div class="form-grid">
-            <input type="text" id="desc" placeholder="Ex: Combustível Fazer 250">
-            <input type="number" id="valor" placeholder="R$ 0,00">
+            <input type="text" id="desc" placeholder="Descrição">
+            <input type="number" id="valor" placeholder="Valor R$">
             <select id="tipo">
                 <option value="receita">Receita (+)</option>
                 <option value="despesa">Despesa (-)</option>
@@ -112,64 +128,58 @@
 
     <div id="view-tabela" class="view-content hidden">
         <table>
-            <thead>
-                <tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr>
-            </thead>
+            <thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead>
             <tbody id="corpo-tabela"></tbody>
         </table>
     </div>
 
     <div id="view-drivo" class="view-content hidden">
-        <h3>Calculadora de Viagem (Drivo Mode)</h3>
-        <p style="color: var(--text-gray); font-size: 14px;">Moto: Yamaha Fazer 250 | Média: <strong>29 km/L</strong></p>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-            <div>
-                <label>KM Total da Viagem:</label><br>
-                <input type="number" id="km-viagem" placeholder="Ex: 500" style="width: 100%; margin-top: 8px; box-sizing: border-box;">
-            </div>
-            <div>
-                <label>Preço do Litro (R$):</label><br>
-                <input type="number" id="preco-litro" placeholder="Ex: 5.99" style="width: 100%; margin-top: 8px; box-sizing: border-box;">
-            </div>
+        <h3>🏍 Calculadora Drivo (29 km/L)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <input type="number" id="km-viagem" placeholder="KM Total">
+            <input type="number" id="preco-litro" placeholder="Preço Litro R$">
         </div>
-        
         <div class="drivo-card">
-            <div>ESTIMATIVA DE GASTO:</div>
-            <div id="resultado-viagem" class="calc-result">R$ 0,00</div>
-            <p id="litros-necessarios" style="font-size: 14px; color: var(--text-gray); margin-top: 5px;">0 litros necessários</p>
+            <div id="resultado-viagem" style="font-size: 24px; font-weight: bold; color: var(--warning-orange);">R$ 0,00</div>
+            <p id="litros-necessarios" style="font-size: 14px; color: var(--text-gray);">Baseado na sua Fazer 250</p>
         </div>
-        <button class="btn-add" style="margin-top: 20px; width: 100%; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular Custos</button>
+        <button class="btn-add" style="margin-top: 15px; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular Viagem</button>
     </div>
 </div>
 
 <script>
+    // Dados ofuscados para dificultar leitura via Ctrl + U
+    const _0x1a2 = "d2V2ZXJzb24="; // weverson
+    const _0x1b3 = "V2YwMjMyNDA="; // Wf023240
     let db = [];
-    const mediaFazer = 29;
+
+    function validaAcesso() {
+        const u = document.getElementById('user-input').value;
+        const p = document.getElementById('pass-input').value;
+        
+        if (btoa(u) === _0x1a2 && btoa(p) === _0x1b3) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-system').classList.remove('hidden');
+            document.body.style.alignItems = "flex-start";
+        } else {
+            alert("Credenciais Inválidas!");
+        }
+    }
 
     function mudarAba(aba) {
         document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
         document.getElementById('view-' + aba).classList.remove('hidden');
         document.getElementById('tab-' + aba).classList.add('active');
     }
 
     function adicionar() {
         const desc = document.getElementById('desc').value;
-        const valorInput = document.getElementById('valor').value;
-        const valor = parseFloat(valorInput);
+        const valor = parseFloat(document.getElementById('valor').value);
         const tipo = document.getElementById('tipo').value;
+        if (!desc || isNaN(valor)) return;
 
-        if (!desc || isNaN(valor)) return alert("Preencha descrição e valor.");
-
-        db.push({ 
-            data: new Date().toLocaleDateString('pt-BR'), 
-            desc, 
-            valor, 
-            tipo 
-        });
-
+        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc, valor, tipo });
         document.getElementById('desc').value = "";
         document.getElementById('valor').value = "";
         renderizar();
@@ -179,29 +189,16 @@
         const feed = document.getElementById('feed-atividades');
         const tabela = document.getElementById('corpo-tabela');
         let r = 0, d = 0;
-
         feed.innerHTML = ""; tabela.innerHTML = "";
         
         db.forEach(t => {
             if (t.tipo === 'receita') r += t.valor; else d += t.valor;
-
-            feed.innerHTML += `
-                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
-                    <div><strong>${t.desc}</strong><br><small style="color: var(--text-gray)">${t.data}</small></div>
-                    <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">
-                        ${t.tipo === 'receita' ? '+' : '-'} R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
-                    </div>
-                </div>`;
-
-            tabela.innerHTML += `
-                <tr>
-                    <td>${t.data}</td>
-                    <td>${t.desc}</td>
-                    <td style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">${t.tipo.toUpperCase()}</td>
-                    <td>R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-                </tr>`;
+            feed.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
+                <div>${t.desc}<br><small style="color: var(--text-gray)">${t.data}</small></div>
+                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toFixed(2)}</div>
+            </div>`;
+            tabela.innerHTML += `<tr><td>${t.data}</td><td>${t.desc}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td></tr>`;
         });
-
         document.getElementById('saldo-total').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-receita').innerText = `R$ ${r.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-despesa').innerText = `R$ ${d.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -210,18 +207,13 @@
     function calcularDrivo() {
         const km = parseFloat(document.getElementById('km-viagem').value);
         const preco = parseFloat(document.getElementById('preco-litro').value);
-
-        if (isNaN(km) || isNaN(preco)) return alert("Informe a quilometragem e o preço.");
-
-        const litros = km / mediaFazer;
-        const custoTotal = litros * preco;
-
-        document.getElementById('resultado-viagem').innerText = `R$ ${custoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('litros-necessarios').innerText = `${litros.toFixed(2)} litros necessários para percorrer ${km} km.`;
+        if (isNaN(km) || isNaN(preco)) return;
+        const custo = (km / 29) * preco; // Baseado na sua média de 29km/L
+        document.getElementById('resultado-viagem').innerText = `R$ ${custo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('litros-necessarios').innerText = `${(km/29).toFixed(2)} litros necessários.`;
     }
 
     function exportarCSV() {
-        if (db.length === 0) return alert("Não há dados para exportar.");
         let csv = "Data;Descricao;Tipo;Valor\n";
         db.forEach(t => csv += `${t.data};${t.desc};${t.tipo};${t.valor.toFixed(2).replace('.', ',')}\n`);
         const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
