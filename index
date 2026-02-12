@@ -31,15 +31,14 @@
         .container { width: 100%; max-width: 1000px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
-        /* Cards e Stats */
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
         }
+
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
 
-        /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .tab-btn {
             background: none; border: none; color: var(--text-gray);
@@ -47,26 +46,25 @@
         }
         .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
 
-        /* Formulários e Inputs */
-        .form-card { background: var(--card-dark); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; }
-        input, select, .btn-action {
+        .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
+        
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
+        input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
             padding: 12px; border-radius: 8px; outline: none;
         }
+
         .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; }
         .btn-export { background: var(--success-green); border: none; font-weight: bold; cursor: pointer; color: #050a1a; padding: 10px 20px; border-radius: 8px; }
 
-        /* Views */
-        .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; color: var(--text-gray); padding: 12px; border-bottom: 2px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .hidden { display: none; }
 
-        /* Drivo Estilo */
         .drivo-card { border-left: 4px solid var(--warning-orange); padding: 20px; background: #1e293b; border-radius: 12px; margin-top: 20px; }
         .calc-result { font-size: 24px; font-weight: bold; color: var(--warning-orange); margin-top: 10px; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -79,28 +77,28 @@
 
     <div class="balance-card">
         <span style="color: var(--text-gray)">SALDO ATUAL</span>
-        <h2 id="saldo-total">R$ 0,00</h2>
+        <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
     </div>
 
     <div class="stats-grid">
         <div class="stat-box">
             <small style="color: var(--text-gray)">ENTRADAS</small>
-            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold;">R$ 0,00</div>
+            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
         </div>
         <div class="stat-box">
             <small style="color: var(--text-gray)">SAÍDAS</small>
-            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold;">R$ 0,00</div>
+            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
         </div>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="mudarAba('lancamentos')">Lançamentos</button>
-        <button class="tab-btn" onclick="mudarAba('tabela')">Excel Mode</button>
-        <button class="tab-btn" onclick="mudarAba('drivo')" style="color: var(--warning-orange)">🏍 DRIVO</button>
+        <button class="tab-btn active" id="tab-lancamentos" onclick="mudarAba('lancamentos')">Lançamentos</button>
+        <button class="tab-btn" id="tab-tabela" onclick="mudarAba('tabela')">Excel Mode</button>
+        <button class="tab-btn" id="tab-drivo" onclick="mudarAba('drivo')" style="color: var(--warning-orange)">🏍 DRIVO</button>
     </div>
 
     <div id="view-lancamentos" class="view-content">
-        <div class="form-grid" style="margin-bottom: 20px;">
+        <div class="form-grid">
             <input type="text" id="desc" placeholder="Ex: Combustível Fazer 250">
             <input type="number" id="valor" placeholder="R$ 0,00">
             <select id="tipo">
@@ -123,16 +121,16 @@
 
     <div id="view-drivo" class="view-content hidden">
         <h3>Calculadora de Viagem (Drivo Mode)</h3>
-        <p style="color: var(--text-gray); font-size: 14px;">Média configurada: <strong>29 km/L</strong> (Fazer 250)</p>
+        <p style="color: var(--text-gray); font-size: 14px;">Moto: Yamaha Fazer 250 | Média: <strong>29 km/L</strong></p>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
             <div>
                 <label>KM Total da Viagem:</label><br>
-                <input type="number" id="km-viagem" placeholder="Ex: 500" style="width: 90%; margin-top: 8px;">
+                <input type="number" id="km-viagem" placeholder="Ex: 500" style="width: 100%; margin-top: 8px; box-sizing: border-box;">
             </div>
             <div>
                 <label>Preço do Litro (R$):</label><br>
-                <input type="number" id="preco-litro" placeholder="Ex: 5.99" style="width: 90%; margin-top: 8px;">
+                <input type="number" id="preco-litro" placeholder="Ex: 5.99" style="width: 100%; margin-top: 8px; box-sizing: border-box;">
             </div>
         </div>
         
@@ -141,31 +139,37 @@
             <div id="resultado-viagem" class="calc-result">R$ 0,00</div>
             <p id="litros-necessarios" style="font-size: 14px; color: var(--text-gray); margin-top: 5px;">0 litros necessários</p>
         </div>
-        
-        <button class="btn-add" style="margin-top: 15px; width: 100%; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular Custos</button>
+        <button class="btn-add" style="margin-top: 20px; width: 100%; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular Custos</button>
     </div>
 </div>
 
 <script>
     let db = [];
-    const mediaFazer = 29; // Sua média de 29km/L
+    const mediaFazer = 29;
 
     function mudarAba(aba) {
         document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
         document.getElementById('view-' + aba).classList.remove('hidden');
-        event.target.classList.add('active');
+        document.getElementById('tab-' + aba).classList.add('active');
     }
 
     function adicionar() {
         const desc = document.getElementById('desc').value;
-        const valor = parseFloat(document.getElementById('valor').value);
+        const valorInput = document.getElementById('valor').value;
+        const valor = parseFloat(valorInput);
         const tipo = document.getElementById('tipo').value;
 
-        if (!desc || isNaN(valor)) return;
+        if (!desc || isNaN(valor)) return alert("Preencha descrição e valor.");
 
-        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc, valor, tipo });
+        db.push({ 
+            data: new Date().toLocaleDateString('pt-BR'), 
+            desc, 
+            valor, 
+            tipo 
+        });
+
         document.getElementById('desc').value = "";
         document.getElementById('valor').value = "";
         renderizar();
@@ -177,13 +181,25 @@
         let r = 0, d = 0;
 
         feed.innerHTML = ""; tabela.innerHTML = "";
+        
         db.forEach(t => {
             if (t.tipo === 'receita') r += t.valor; else d += t.valor;
-            feed.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
-                <div>${t.desc}<br><small style="color: var(--text-gray)">${t.data}</small></div>
-                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">${t.tipo === 'receita' ? '+' : '-'} R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
-            </div>`;
-            tabela.innerHTML += `<tr><td>${t.data}</td><td>${t.desc}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td></tr>`;
+
+            feed.innerHTML += `
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
+                    <div><strong>${t.desc}</strong><br><small style="color: var(--text-gray)">${t.data}</small></div>
+                    <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">
+                        ${t.tipo === 'receita' ? '+' : '-'} R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
+                    </div>
+                </div>`;
+
+            tabela.innerHTML += `
+                <tr>
+                    <td>${t.data}</td>
+                    <td>${t.desc}</td>
+                    <td style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">${t.tipo.toUpperCase()}</td>
+                    <td>R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                </tr>`;
         });
 
         document.getElementById('saldo-total').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -195,7 +211,7 @@
         const km = parseFloat(document.getElementById('km-viagem').value);
         const preco = parseFloat(document.getElementById('preco-litro').value);
 
-        if (isNaN(km) || isNaN(preco)) return alert("Informe a quilometragem e o preço do combustível.");
+        if (isNaN(km) || isNaN(preco)) return alert("Informe a quilometragem e o preço.");
 
         const litros = km / mediaFazer;
         const custoTotal = litros * preco;
@@ -205,9 +221,10 @@
     }
 
     function exportarCSV() {
+        if (db.length === 0) return alert("Não há dados para exportar.");
         let csv = "Data;Descricao;Tipo;Valor\n";
-        db.forEach(t => csv += `${t.data};${t.desc};${t.tipo};${t.valor}\n`);
-        const blob = new Blob([csv], { type: 'text/csv' });
+        db.forEach(t => csv += `${t.data};${t.desc};${t.tipo};${t.valor.toFixed(2).replace('.', ',')}\n`);
+        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = "financas_weverson.csv";
