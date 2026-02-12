@@ -24,8 +24,9 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Alinhado ao topo */
             min-height: 100vh;
+            padding-top: 20px;
         }
 
         #login-screen {
@@ -36,15 +37,23 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             border: 1px solid var(--border);
             width: 320px;
+            margin-top: 10vh;
         }
 
         #main-system { width: 100%; max-width: 1000px; padding: 20px; }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
+            text-align: center;
         }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+        .stat-box.up { border-bottom: 4px solid var(--success-green); }
+        .stat-box.down { border-bottom: 4px solid var(--danger-red); }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .tab-btn {
@@ -71,6 +80,9 @@
         label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; }
         .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 13px; }
         .maint-badge { background: #1e293b; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--warning-orange); border: 1px solid var(--warning-orange); }
+
+        .filter-section { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .filter-section select { width: auto; padding: 8px; }
     </style>
 </head>
 <body>
@@ -85,13 +97,18 @@
 
 <div id="main-system" class="hidden">
     <div class="header">
-        <h1>Financeiro</h1>
+        <div class="filter-section">
+            <select id="filtro-mes" onchange="renderizarTudo()">
+                <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+                <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+                <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+                <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+            <select id="filtro-ano" onchange="renderizarTudo()">
+                <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+            </select>
+        </div>
         <button class="btn-logout" onclick="logout()">Sair</button>
-    </div>
-
-    <div class="balance-card">
-        <span style="color: var(--text-gray)">SALDO GERAL</span>
-        <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
     </div>
 
     <div class="tabs">
@@ -101,6 +118,22 @@
     </div>
 
     <div id="view-lancamentos" class="view-content">
+        <div class="balance-card">
+            <span style="color: var(--text-gray)">SALDO NO PERÍODO</span>
+            <h2 id="saldo-periodo" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box up">
+                <small style="color: var(--text-gray)">RECEITAS</small>
+                <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+            <div class="stat-box down">
+                <small style="color: var(--text-gray)">DESPESAS</small>
+                <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+        </div>
+
         <div class="form-grid">
             <input type="text" id="desc" placeholder="Descrição">
             <input type="number" id="valor" placeholder="Valor R$">
@@ -115,9 +148,7 @@
 
     <div id="view-drivo" class="view-content hidden">
         <h3 style="color: var(--warning-orange)">Gestão Fazer 250</h3>
-        
         <div style="background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <label style="font-weight: bold; color: var(--warning-orange); margin-bottom: 10px;">⛽ Calculadora de Viagem</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <input type="number" id="km-inicial" placeholder="KM Inicial">
                 <input type="number" id="km-final" placeholder="KM Final">
@@ -128,45 +159,35 @@
                 <button id="btn-lancar-moto" class="btn-add" style="opacity: 0.5; cursor: not-allowed;" onclick="lancarGastoMoto()" disabled>Lançar Viagem</button>
             </div>
         </div>
-
         <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px;">
-            <label style="font-weight: bold; color: var(--text-white); margin-bottom: 10px;">🔧 Registro de Manutenção</label>
             <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
                 <select id="maint-item">
-                    <option value="Troca de Óleo">Troca de Óleo</option>
-                    <option value="Pneu Dianteiro">Pneu Dianteiro</option>
-                    <option value="Pneu Traseiro">Pneu Traseiro</option>
-                    <option value="Relação">Relação (Kit)</option>
-                    <option value="Pastilha Freio">Pastilha de Freio</option>
-                    <option value="Filtro de Ar">Filtro de Ar</option>
-                    <option value="Outros">Outros</option>
+                    <option value="Troca de Óleo">Troca de Óleo</option><option value="Pneu">Pneu</option>
+                    <option value="Relação">Relação</option><option value="Freio">Freio</option><option value="Outros">Outros</option>
                 </select>
                 <input type="number" id="maint-km" placeholder="KM Atual">
-                <input type="number" id="maint-valor" placeholder="Valor R$">
+                <input type="number" id="maint-valor" placeholder="R$">
             </div>
             <button class="btn-add" style="margin-top: 10px; width: 100%;" onclick="lancarManutencao()">Registrar Manutenção</button>
         </div>
-
-        <h4 style="margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Histórico Drivo</h4>
+        <h4 style="margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Histórico Moto</h4>
         <div id="feed-moto"></div>
     </div>
 
     <div id="view-perfil" class="view-content hidden">
-        <h3>⚙ Configurações</h3>
+        <h3>⚙ Perfil</h3>
         <div style="display: grid; gap: 15px; margin-top: 15px;">
-            <div><label>Estado (UF)</label><select id="perfil-uf" onchange="carregarCidades()"><option value="CE">Ceará</option><option value="MA">Maranhão</option></select></div>
-            <div><label>Cidade</label><select id="perfil-cidade" onchange="buscarPrecoCombustivel()"></select></div>
-            <div><label>Autonomia (km/L)</label><input type="number" id="perfil-autonomia" value="29"></div>
-            <div><label>Preço do Litro R$</label><input type="number" id="perfil-preco-litro" step="0.01"></div>
+            <select id="perfil-uf" onchange="carregarCidades()"><option value="CE">Ceará</option><option value="MA">Maranhão</option></select>
+            <select id="perfil-cidade" onchange="buscarPrecoCombustivel()"></select>
+            <input type="number" id="perfil-autonomia" placeholder="KM/L">
+            <input type="number" id="perfil-preco-litro" step="0.01" placeholder="Preço Litro">
             <button class="btn-add" onclick="salvarPerfil()">Salvar Perfil</button>
         </div>
     </div>
 </div>
 
 <script>
-    const _0x1a2 = "d2V2ZXJzb24="; 
-    const _0x1b3 = "V2YwMjMyNDA="; 
-    
+    const _0x1a2 = "d2V2ZXJzb24="; const _0x1b3 = "V2YwMjMyNDA="; 
     let db = JSON.parse(localStorage.getItem('financas_weverson')) || [];
     let db_moto = JSON.parse(localStorage.getItem('moto_weverson')) || [];
     let perfil = JSON.parse(localStorage.getItem('perfil_weverson')) || { uf: 'CE', cidade: 'Fortaleza', autonomia: 29, preco: 6.00 };
@@ -175,29 +196,28 @@
     const cidadesDB = { "CE": ["Fortaleza", "Canindé", "Sobral"], "MA": ["Imperatriz", "São Luís"] };
 
     window.onload = function() {
+        const agora = new Date();
+        document.getElementById('filtro-mes').value = String(agora.getMonth() + 1).padStart(2, '0');
         if(sessionStorage.getItem('session_active') === 'true') showSystem();
     }
 
     function validaAcesso() {
-        if (btoa(document.getElementById('user-input').value) === _0x1a2 && 
-            btoa(document.getElementById('pass-input').value) === _0x1b3) {
-            sessionStorage.setItem('session_active', 'true');
-            showSystem();
-        } else alert("Acesso Negado!");
+        if (btoa(document.getElementById('user-input').value) === _0x1a2 && btoa(document.getElementById('pass-input').value) === _0x1b3) {
+            sessionStorage.setItem('session_active', 'true'); showSystem();
+        } else alert("Erro!");
     }
 
     function showSystem() {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-system').classList.remove('hidden');
-        carregarDadosPerfil();
-        renderizar();
-        renderizarMoto();
+        carregarDadosPerfil(); renderizarTudo();
     }
+
+    function renderizarTudo() { renderizar(); renderizarMoto(); }
 
     function carregarCidades() {
         const uf = document.getElementById('perfil-uf').value;
-        const sel = document.getElementById('perfil-cidade');
-        sel.innerHTML = '';
+        const sel = document.getElementById('perfil-cidade'); sel.innerHTML = '';
         cidadesDB[uf].forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
         buscarPrecoCombustivel();
     }
@@ -208,121 +228,68 @@
     }
 
     function salvarPerfil() {
-        perfil = {
-            uf: document.getElementById('perfil-uf').value,
-            cidade: document.getElementById('perfil-cidade').value,
-            autonomia: parseFloat(document.getElementById('perfil-autonomia').value),
-            preco: parseFloat(document.getElementById('perfil-preco-litro').value)
-        };
-        localStorage.setItem('perfil_weverson', JSON.stringify(perfil));
-        alert("Configurações Salvas!");
+        perfil = { uf: document.getElementById('perfil-uf').value, cidade: document.getElementById('perfil-cidade').value, autonomia: parseFloat(document.getElementById('perfil-autonomia').value), preco: parseFloat(document.getElementById('perfil-preco-litro').value) };
+        localStorage.setItem('perfil_weverson', JSON.stringify(perfil)); alert("Salvo!");
     }
 
     function carregarDadosPerfil() {
-        document.getElementById('perfil-uf').value = perfil.uf;
-        carregarCidades();
-        document.getElementById('perfil-cidade').value = perfil.cidade;
-        document.getElementById('perfil-autonomia').value = perfil.autonomia;
-        document.getElementById('perfil-preco-litro').value = perfil.preco;
+        document.getElementById('perfil-uf').value = perfil.uf; carregarCidades();
+        document.getElementById('perfil-cidade').value = perfil.cidade; document.getElementById('perfil-autonomia').value = perfil.autonomia; document.getElementById('perfil-preco-litro').value = perfil.preco;
     }
 
-    function calcularDrivo() {
-        const ki = parseFloat(document.getElementById('km-inicial').value);
-        const kf = parseFloat(document.getElementById('km-final').value);
-        if(isNaN(ki) || isNaN(kf) || kf <= ki) return alert("Verifique os KMs inseridos.");
+    function renderizar() {
+        const mes = document.getElementById('filtro-mes').value;
+        const ano = document.getElementById('filtro-ano').value;
+        const feed = document.getElementById('feed-atividades');
+        let r = 0, d = 0; feed.innerHTML = "";
         
-        const dist = kf - ki;
-        ultimoCalculo = (dist / perfil.autonomia) * perfil.preco;
-        
-        document.getElementById('resultado-viagem').innerText = `R$ ${ultimoCalculo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        
-        const btn = document.getElementById('btn-lancar-moto');
-        btn.disabled = false; btn.style.opacity = "1"; btn.style.cursor = "pointer";
-    }
-
-    function lancarGastoMoto() {
-        db_moto.push({
-            data: new Date().toLocaleDateString('pt-BR'),
-            tipo: 'VIAGEM',
-            detalhe: `${document.getElementById('km-final').value - document.getElementById('km-inicial').value}km`,
-            valor: ultimoCalculo,
-            km: document.getElementById('km-final').value
+        db.filter(t => t.data.split('/')[1] === mes && t.data.split('/')[2] === ano).forEach(t => {
+            t.tipo === 'receita' ? r += t.valor : d += t.valor;
+            feed.innerHTML += `<div class="history-item"><div>${t.desc}<br><small>${t.data}</small></div><div style="color:${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toFixed(2)}</div></div>`;
         });
-        salvarERenderizarMoto();
-    }
-
-    function lancarManutencao() {
-        const item = document.getElementById('maint-item').value;
-        const km = document.getElementById('maint-km').value;
-        const valor = parseFloat(document.getElementById('maint-valor').value);
-        
-        if(!km || isNaN(valor)) return alert("Preencha KM e Valor da manutenção.");
-
-        db_moto.push({
-            data: new Date().toLocaleDateString('pt-BR'),
-            tipo: 'MANUTENÇÃO',
-            detalhe: item,
-            valor: valor,
-            km: km
-        });
-        
-        document.getElementById('maint-km').value = "";
-        document.getElementById('maint-valor').value = "";
-        salvarERenderizarMoto();
-    }
-
-    function salvarERenderizarMoto() {
-        localStorage.setItem('moto_weverson', JSON.stringify(db_moto));
-        renderizarMoto();
-        // Reset Calculadora
-        document.getElementById('km-inicial').value = "";
-        document.getElementById('km-final').value = "";
-        document.getElementById('btn-lancar-moto').disabled = true;
+        document.getElementById('saldo-periodo').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('resumo-receita').innerText = `R$ ${r.toFixed(2)}`;
+        document.getElementById('resumo-despesa').innerText = `R$ ${d.toFixed(2)}`;
     }
 
     function renderizarMoto() {
-        const feed = document.getElementById('feed-moto');
-        feed.innerHTML = "";
-        db_moto.slice().reverse().forEach(m => {
-            const isMaint = m.tipo === 'MANUTENÇÃO';
-            feed.innerHTML += `<div class="history-item">
-                <div style="display:flex; flex-direction:column">
-                    <span>${m.data} - <small>${m.km} KM</small></span>
-                    <span style="font-size:11px; color:var(--text-gray)">${isMaint ? '<span class="maint-badge">'+m.detalhe+'</span>' : 'Viagem: '+m.detalhe}</span>
-                </div>
-                <span style="color:${isMaint ? 'var(--danger-red)' : 'var(--warning-orange)'}">R$ ${m.valor.toFixed(2)}</span>
-            </div>`;
+        const mes = document.getElementById('filtro-mes').value;
+        const ano = document.getElementById('filtro-ano').value;
+        const feed = document.getElementById('feed-moto'); feed.innerHTML = "";
+        db_moto.filter(m => m.data.split('/')[1] === mes && m.data.split('/')[2] === ano).slice().reverse().forEach(m => {
+            feed.innerHTML += `<div class="history-item"><div>${m.data} - <small>${m.km} KM</small><br><span class="maint-badge">${m.detalhe}</span></div><span style="color:var(--warning-orange)">R$ ${m.valor.toFixed(2)}</span></div>`;
         });
+    }
+
+    function adicionar() {
+        const d = document.getElementById('desc').value; const v = parseFloat(document.getElementById('valor').value);
+        if (!d || isNaN(v)) return;
+        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc: d, valor: v, tipo: document.getElementById('tipo').value });
+        localStorage.setItem('financas_weverson', JSON.stringify(db)); renderizar();
+    }
+
+    function calcularDrivo() {
+        const dist = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
+        if(dist <= 0) return alert("Erro KM");
+        ultimoCalculo = (dist / perfil.autonomia) * perfil.preco;
+        document.getElementById('resultado-viagem').innerText = `R$ ${ultimoCalculo.toFixed(2)}`;
+        document.getElementById('btn-lancar-moto').disabled = false; document.getElementById('btn-lancar-moto').style.opacity = "1";
+    }
+
+    function lancarGastoMoto() {
+        db_moto.push({ data: new Date().toLocaleDateString('pt-BR'), detalhe: 'Viagem', valor: ultimoCalculo, km: document.getElementById('km-final').value });
+        localStorage.setItem('moto_weverson', JSON.stringify(db_moto)); renderizarMoto();
+    }
+
+    function lancarManutencao() {
+        db_moto.push({ data: new Date().toLocaleDateString('pt-BR'), detalhe: document.getElementById('maint-item').value, valor: parseFloat(document.getElementById('maint-valor').value), km: document.getElementById('maint-km').value });
+        localStorage.setItem('moto_weverson', JSON.stringify(db_moto)); renderizarMoto();
     }
 
     function mudarAba(aba) {
         document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('view-' + aba).classList.remove('hidden');
-        document.getElementById('tab-' + aba).classList.add('active');
-    }
-
-    function adicionar() {
-        const d = document.getElementById('desc').value;
-        const v = parseFloat(document.getElementById('valor').value);
-        if (!d || isNaN(v)) return;
-        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc: d, valor: v, tipo: document.getElementById('tipo').value });
-        localStorage.setItem('financas_weverson', JSON.stringify(db));
-        renderizar();
-    }
-
-    function renderizar() {
-        const feed = document.getElementById('feed-atividades');
-        let r = 0, d = 0;
-        feed.innerHTML = "";
-        db.forEach(t => {
-            t.tipo === 'receita' ? r += t.valor : d += t.valor;
-            feed.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
-                <div>${t.desc}<br><small style="color: var(--text-gray)">${t.data}</small></div>
-                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toFixed(2)}</div>
-            </div>`;
-        });
-        document.getElementById('saldo-total').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('view-' + aba).classList.remove('hidden'); document.getElementById('tab-' + aba).classList.add('active');
     }
 
     function logout() { sessionStorage.removeItem('session_active'); window.location.reload(); }
