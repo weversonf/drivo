@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanças Weverson - Cloud Sync</title>
+    <title>Financeiro Weverson</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22 fill=%22%230095ff%22>🖩</text></svg>">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
             --bg-dark: #050a1a;
@@ -28,8 +33,10 @@
             min-height: 100vh;
             padding-top: 20px;
             user-select: none;
+            -webkit-user-select: none;
         }
 
+        /* LOGIN SCREEN */
         #login-screen {
             background: var(--card-dark);
             padding: 40px;
@@ -41,19 +48,27 @@
             margin-top: 50px;
         }
 
+        .logo-icon {
+            font-size: 50px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        /* SYSTEM LAYOUT */
         #main-system { width: 100%; max-width: 1000px; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
             text-align: center;
         }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
-        .stat-box.up { border-bottom: 4px solid var(--success-green); }
-        .stat-box.down { border-bottom: 4px solid var(--danger-red); }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .tab-btn {
@@ -63,8 +78,9 @@
         .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
 
         .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
         
+        /* INPUTS E BOTÕES */
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
         input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
             padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box;
@@ -77,15 +93,20 @@
 
         .loading { opacity: 0.4; pointer-events: none; }
         .hidden { display: none !important; }
-        label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-transform: uppercase; }
+        
+        label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-transform: uppercase; margin-top: 10px;}
+        
         .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dotted var(--border); font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <h2>Weverson</h2>
-    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Cloud System Ativo ☁️</p>
+    <div class="logo-icon">
+        <i class="fa-solid fa-calculator"></i>
+    </div>
+    <h2 style="margin: 0;">Weverson</h2>
+    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Cloud System ☁️</p>
     <input type="text" id="user-input" placeholder="Usuário">
     <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
     <button class="btn-add" onclick="validaAcesso()">Entrar</button>
@@ -93,6 +114,10 @@
 
 <div id="main-system" class="hidden">
     <div class="header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fa-solid fa-calculator" style="color: var(--primary-blue); font-size: 24px;"></i>
+            <h1 style="font-size: 20px; margin: 0;">Financeiro</h1>
+        </div>
         <div style="display: flex; gap: 10px;">
             <select id="filtro-mes" style="width: auto;" onchange="sync()">
                 <option value="01">Jan</option><option value="02" selected>Fev</option><option value="03">Mar</option>
@@ -100,11 +125,8 @@
                 <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
                 <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
             </select>
-            <select id="filtro-ano" style="width: auto;">
-                <option value="2026">2026</option>
-            </select>
+            <button class="btn-logout" onclick="logout()">Sair</button>
         </div>
-        <button class="btn-logout" onclick="logout()">Sair</button>
     </div>
 
     <div class="tabs">
@@ -120,10 +142,10 @@
         </div>
         <div class="form-grid">
             <input type="text" id="desc" placeholder="Descrição">
-            <input type="number" id="valor" placeholder="R$">
+            <input type="number" id="valor" placeholder="Valor R$">
             <select id="tipo">
-                <option value="receita">Receita</option>
-                <option value="despesa">Despesa</option>
+                <option value="receita">Receita (+)</option>
+                <option value="despesa">Despesa (-)</option>
             </select>
             <button class="btn-add" id="btn-save-lanc" onclick="salvarLancamento()">Salvar</button>
         </div>
@@ -131,46 +153,49 @@
     </div>
 
     <div id="view-moto" class="view-content hidden">
-        <h3 style="color: var(--warning-orange)">Calculadora Drivo</h3>
+        <h3 style="color: var(--warning-orange)">Calculadora Fazer 250</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <input type="number" id="km-inicial" placeholder="KM Inicial">
             <input type="number" id="km-final" placeholder="KM Final">
         </div>
         <div class="balance-card" style="padding: 15px; background: #1e293b;">
             <div id="res-viagem" style="font-size: 24px; color: var(--warning-orange); font-weight: bold;">R$ 0,00</div>
-            <small id="detalhe-km" style="color: var(--text-gray)">Distância: 0km</small>
+            <small id="detalhe-km" style="color: var(--text-gray)">Custo Estimado</small>
         </div>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <div style="display: flex; gap: 10px;">
             <button class="btn-warning" onclick="calcDrivo()">Calcular</button>
-            <button class="btn-add" id="btn-save-moto" onclick="salvarViagem()" style="opacity:0.5" disabled>Lançar Viagem</button>
+            <button class="btn-add" id="btn-save-moto" onclick="salvarViagem()" style="opacity:0.5" disabled>Lançar Gasto</button>
         </div>
-        <div id="feed-moto"></div>
+        <div id="feed-moto" style="margin-top: 25px;"></div>
     </div>
 
     <div id="view-perfil" class="view-content hidden">
-        <label>Autonomia Fazer 250 (km/L)</label>
+        <h3>Configurações de Perfil</h3>
+        <label>Autonomia da Moto (km/L)</label>
         <input type="number" id="perf-autonomia" value="29">
-        <label>Preço Combustível R$</label>
+        <label>Preço Combustível Médio (R$)</label>
         <input type="number" id="perf-preco" value="6.15">
-        <button class="btn-add" style="margin-top: 15px;" onclick="salvarPerfil()">Salvar Perfil</button>
+        <button class="btn-add" style="margin-top: 20px;" onclick="salvarPerfil()">Salvar Configurações</button>
     </div>
 </div>
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxhkQ_lxtxgUTT51hC3yzEi1T8ebdTVuXqJyyaYEpxhp_w0mfuRvUBFAItpyBD0pvrB6Q/exec";
-    const _0x1a2 = "d2V2ZXJzb24="; 
-    const _0x1b3 = "V2YwMjMyNDA="; 
+    const _0x1a2 = "d2V2ZXJzb24="; // weverson
+    const _0x1b3 = "V2YwMjMyNDA="; // Wf023240
     
     let db_lanc = [];
     let db_moto = [];
     let config = JSON.parse(localStorage.getItem('conf_w')) || { autonomia: 29, preco: 6.15 };
     let calculoTemp = 0;
 
+    window.onload = () => { if(sessionStorage.getItem('active') === 'true') showSystem(); };
+
     function validaAcesso() {
         if (btoa(document.getElementById('user-input').value) === _0x1a2 && btoa(document.getElementById('pass-input').value) === _0x1b3) {
             sessionStorage.setItem('active', 'true');
             showSystem();
-        } else alert("Credenciais Incorretas");
+        } else alert("Usuário ou senha incorretos.");
     }
 
     function showSystem() {
@@ -190,7 +215,8 @@
             const resMoto = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "get", aba: "Moto" }) });
             db_moto = await resMoto.json();
             render();
-        } finally { sys.classList.remove('loading'); }
+        } catch(e) { alert("Erro de conexão com a nuvem."); }
+        finally { sys.classList.remove('loading'); }
     }
 
     async function salvarLancamento() {
@@ -198,29 +224,27 @@
         const valor = parseFloat(document.getElementById('valor').value);
         if (!desc || isNaN(valor)) return;
         const data = [new Date().toLocaleDateString('pt-BR'), desc, valor, document.getElementById('tipo').value];
-        await sendData("Lancamentos", data);
+        document.getElementById('btn-save-lanc').innerText = "...";
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: data }) });
+        document.getElementById('btn-save-lanc').innerText = "Salvar";
         document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
         sync();
     }
 
     async function salvarViagem() {
-        const km = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
-        const data = [new Date().toLocaleDateString('pt-BR'), km, calculoTemp, "Viagem"];
-        await sendData("Moto", data);
+        const dist = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
+        const data = [new Date().toLocaleDateString('pt-BR'), dist, calculoTemp, "Viagem"];
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Moto", valores: data }) });
         document.getElementById('km-inicial').value = ""; document.getElementById('km-final').value = "";
         sync();
     }
 
-    async function sendData(aba, valores) {
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: aba, valores: valores }) });
-    }
-
     function calcDrivo() {
         const d = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
-        if(d <= 0) return alert("Erro KM");
+        if(d <= 0) return alert("Odômetro final deve ser maior que o inicial.");
         calculoTemp = (d / config.autonomia) * config.preco;
         document.getElementById('res-viagem').innerText = `R$ ${calculoTemp.toFixed(2)}`;
-        document.getElementById('detalhe-km').innerText = `Distância: ${d}km`;
+        document.getElementById('detalhe-km').innerText = `Distância: ${d}km percorridos`;
         const btn = document.getElementById('btn-save-moto');
         btn.disabled = false; btn.style.opacity = 1;
     }
@@ -229,7 +253,7 @@
         const mes = document.getElementById('filtro-mes').value;
         let saldo = 0;
         
-        // Lançamentos
+        // Feed Lançamentos
         const fLanc = document.getElementById('feed-atividades');
         fLanc.innerHTML = "";
         db_lanc.forEach(r => {
@@ -237,18 +261,18 @@
             const v = tipo === 'receita' ? valor : -valor;
             saldo += v;
             if(data.split('/')[1] === mes) {
-                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'#00d28a':'#ff4d6d'}">R$ ${valor.toFixed(2)}</div></div>`;
+                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'#00d28a':'#ff4d6d'}">R$ ${valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>`;
             }
         });
         document.getElementById('saldo-total').innerText = `R$ ${saldo.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
 
-        // Moto
+        // Feed Moto
         const fMoto = document.getElementById('feed-moto');
         fMoto.innerHTML = "";
         db_moto.slice().reverse().forEach(r => {
             const [data, km, valor, detalhe] = r;
             if(data.split('/')[1] === mes) {
-                fMoto.innerHTML += `<div class="history-item"><div>${detalhe} - ${km}km<br><small>${data}</small></div><div style="color:var(--warning-orange)">R$ ${valor.toFixed(2)}</div></div>`;
+                fMoto.innerHTML += `<div class="history-item"><div>${detalhe} - ${km}km<br><small>${data}</small></div><div style="color:var(--warning-orange)">R$ ${valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>`;
             }
         });
     }
@@ -261,13 +285,12 @@
     }
 
     function salvarPerfil() {
-        config = { autonomia: document.getElementById('perf-autonomia').value, preco: document.getElementById('perf-preco').value };
+        config = { autonomia: parseFloat(document.getElementById('perf-autonomia').value), preco: parseFloat(document.getElementById('perf-preco').value) };
         localStorage.setItem('conf_w', JSON.stringify(config));
-        alert("Perfil Salvo!");
+        alert("Configurações salvas localmente!");
     }
 
     function logout() { sessionStorage.removeItem('active'); window.location.reload(); }
-    window.onload = () => { if(sessionStorage.getItem('active') === 'true') showSystem(); };
 </script>
 </body>
 </html>
