@@ -55,7 +55,7 @@
         }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); font-size: 0.9em; }
         .stat-box.up { border-bottom: 4px solid var(--success-green); }
         .stat-box.down { border-bottom: 4px solid var(--danger-red); }
 
@@ -68,20 +68,19 @@
 
         .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
         
-        /* FORM UNIFICADO */
         .form-main { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
         .row { display: flex; gap: 10px; }
         
         input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
             padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box;
+            user-select: auto;
         }
 
         .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; padding: 15px; }
         .btn-warning { background: var(--warning-orange); border: none; font-weight: bold; cursor: pointer; color: #050a1a; }
         .btn-logout { background: transparent; border: 1px solid var(--danger-red); color: var(--danger-red); padding: 5px 15px; cursor: pointer; border-radius: 8px; width: auto; font-size: 12px; }
 
-        /* SWITCH RECORRENCIA */
         .switch-container { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--warning-orange); padding: 5px; }
         .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -101,7 +100,7 @@
 <div id="login-screen">
     <div style="font-size: 50px; color: var(--primary-blue); margin-bottom: 15px;"><i class="fa-solid fa-bolt"></i></div>
     <h2 style="margin: 0;">Drivo & Money</h2>
-    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Drivo & Money</p>
+    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Cloud System ☁️</p>
     <input type="text" id="user-input" placeholder="Usuário">
     <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
     <button class="btn-add" onclick="validaAcesso()">Entrar</button>
@@ -137,8 +136,8 @@
         </div>
 
         <div class="stats-grid">
-            <div class="stat-box up"><small>RECEITAS MÊS</small><div id="resumo-receita">R$ 0,00</div></div>
-            <div class="stat-box down"><small>DESPESAS MÊS</small><div id="resumo-despesa">R$ 0,00</div></div>
+            <div class="stat-box up"><small>RECEITAS MÊS</small><div id="resumo-receita" style="color: var(--success-green); font-weight: bold;">R$ 0,00</div></div>
+            <div class="stat-box down"><small>DESPESAS MÊS</small><div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold;">R$ 0,00</div></div>
         </div>
 
         <div class="form-main">
@@ -166,7 +165,7 @@
     </div>
 
     <div id="view-moto" class="view-content hidden">
-        <h3 style="color: var(--warning-orange)">Calculadora Fazer 250</h3>
+        <h3 style="color: var(--warning-orange)">Gestão Fazer 250</h3>
         <div class="row" style="margin-bottom: 10px;">
             <input type="number" id="km-inicial" placeholder="KM Inicial">
             <input type="number" id="km-final" placeholder="KM Final">
@@ -241,7 +240,7 @@
             const resMoto = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "get", aba: "Moto" }) });
             db_moto = await resMoto.json();
             render();
-        } finally { sys.classList.remove('loading'); }
+        } catch(e) { console.error(e); } finally { sys.classList.remove('loading'); }
     }
 
     function render() {
@@ -252,16 +251,10 @@
         db_lanc.forEach(r => {
             const [data, desc, valor, tipo] = r;
             const v = tipo === 'receita' ? valor : -valor;
-            
-            // O saldo total considera TUDO o que já aconteceu ou está agendado na planilha
             saldoTotal += v;
-            
             if(data.split('/')[1] === mesFiltro) {
                 tipo === 'receita' ? recMes += valor : desMes += valor;
-                fLanc.innerHTML += `<div class="history-item">
-                    <div>${desc}${desc.includes('🔁') ? '' : ''}<br><small>${data}</small></div>
-                    <div style="color:${tipo==='receita'?'var(--success-green)':'var(--danger-red)'}">R$ ${valor.toFixed(2)}</div>
-                </div>`;
+                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'var(--success-green)':'var(--danger-red)'}">R$ ${valor.toFixed(2)}</div></div>`;
             }
         });
 
@@ -288,25 +281,31 @@
         const btn = document.getElementById('btn-save');
         btn.innerText = "Sincronizando..."; btn.disabled = true;
 
+        let pacoteDeDados = [];
+
         if (isFixo) {
-            // Gerar 12 meses
             for (let i = 0; i < 12; i++) {
                 let d = new Date();
                 d.setMonth(d.getMonth() + i);
                 const dataFormatada = d.toLocaleDateString('pt-BR');
-                const descFinal = `${descBase} 🔁 (${i+1}/12)`;
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: [dataFormatada, descFinal, valor, tipo] }) });
+                pacoteDeDados.push([dataFormatada, `${descBase} 🔁 (${i+1}/12)`, valor, tipo]);
             }
         } else {
-            // Lançamento Único
             const dataHoje = new Date().toLocaleDateString('pt-BR');
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: [dataHoje, descBase, valor, tipo] }) });
+            pacoteDeDados = [dataHoje, descBase, valor, tipo];
         }
 
-        document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
-        document.getElementById('is-fixo').checked = false;
-        btn.innerText = "Salvar Lançamento"; btn.disabled = false;
-        sync();
+        try {
+            await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: pacoteDeDados }) 
+            });
+            document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
+            document.getElementById('is-fixo').checked = false;
+        } finally {
+            btn.innerText = "Salvar Lançamento"; btn.disabled = false;
+            sync();
+        }
     }
 
     function calcDrivo() {
