@@ -39,7 +39,6 @@
         }
 
         #main-system { width: 100%; max-width: 1000px; padding: 20px; }
-        .container { width: 100%; }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .balance-card {
@@ -82,88 +81,84 @@
 <div id="login-screen">
     <h2 style="margin-bottom: 5px;">Acesso Restrito</h2>
     <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 30px;">Financeiro Weverson</p>
-    <input type="text" id="user-input" placeholder="Usuário" style="margin-bottom: 10px;">
-    <input type="password" id="pass-input" placeholder="Senha" style="margin-bottom: 20px;">
+    <input type="text" id="user-input" placeholder="Usuário">
+    <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
     <button class="btn-add" onclick="validaAcesso()">Entrar</button>
 </div>
 
 <div id="main-system" class="hidden">
-    <div class="container">
-        <div class="header">
-            <h1>Financeiro</h1>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn-export" onclick="exportarCSV()">⬇ Exportar Excel</button>
-                <button class="btn-logout" onclick="logout()">Sair</button>
-            </div>
+    <div class="header">
+        <h1>Financeiro</h1>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn-export" onclick="exportarCSV()">⬇ Exportar Excel</button>
+            <button class="btn-logout" onclick="logout()">Sair</button>
         </div>
+    </div>
 
-        <div class="balance-card">
-            <span style="color: var(--text-gray)">SALDO ATUAL</span>
-            <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
-        </div>
+    <div class="balance-card">
+        <span style="color: var(--text-gray)">SALDO ATUAL</span>
+        <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
+    </div>
 
-        <div class="stats-grid">
-            <div class="stat-box">
-                <small style="color: var(--text-gray)">ENTRADAS</small>
-                <div id="resumo-receita" style="color: var(--success-green); font-weight: bold;">R$ 0,00</div>
-            </div>
-            <div class="stat-box">
-                <small style="color: var(--text-gray)">SAÍDAS</small>
-                <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold;">R$ 0,00</div>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <small style="color: var(--text-gray)">ENTRADAS</small>
+            <div id="resumo-receita" style="color: var(--success-green); font-weight: bold;">R$ 0,00</div>
         </div>
+        <div class="stat-box">
+            <small style="color: var(--text-gray)">SAÍDAS</small>
+            <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold;">R$ 0,00</div>
+        </div>
+    </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-lancamentos" onclick="mudarAba('lancamentos')">Lançamentos</button>
-            <button class="tab-btn" id="tab-tabela" onclick="mudarAba('tabela')">Excel Mode</button>
-            <button class="tab-btn" id="tab-drivo" onclick="mudarAba('drivo')" style="color: var(--warning-orange)">🏍 DRIVO</button>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" id="tab-lancamentos" onclick="mudarAba('lancamentos')">Lançamentos</button>
+        <button class="tab-btn" id="tab-tabela" onclick="mudarAba('tabela')">Excel Mode</button>
+        <button class="tab-btn" id="tab-drivo" onclick="mudarAba('drivo')" style="color: var(--warning-orange)">🏍 DRIVO</button>
+    </div>
 
-        <div id="view-lancamentos" class="view-content">
-            <div class="form-grid">
-                <input type="text" id="desc" placeholder="Descrição">
-                <input type="number" id="valor" placeholder="Valor R$">
-                <select id="tipo">
-                    <option value="receita">Receita (+)</option>
-                    <option value="despesa">Despesa (-)</option>
-                </select>
-                <button class="btn-add" onclick="adicionar()">Lançar</button>
-            </div>
-            <div id="feed-atividades"></div>
-            <button onclick="limparDados()" style="background:none; border:none; color:var(--danger-red); cursor:pointer; font-size:11px; margin-top:20px; opacity:0.6;">Apagar banco de dados</button>
+    <div id="view-lancamentos" class="view-content">
+        <div class="form-grid">
+            <input type="text" id="desc" placeholder="Descrição">
+            <input type="number" id="valor" placeholder="Valor R$">
+            <select id="tipo">
+                <option value="receita">Receita (+)</option>
+                <option value="despesa">Despesa (-)</option>
+            </select>
+            <button class="btn-add" onclick="adicionar()">Lançar</button>
         </div>
+        <div id="feed-atividades"></div>
+    </div>
 
-        <div id="view-tabela" class="view-content hidden">
-            <table>
-                <thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead>
-                <tbody id="corpo-tabela"></tbody>
-            </table>
-        </div>
+    <div id="view-tabela" class="view-content hidden">
+        <table>
+            <thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+    </div>
 
-        <div id="view-drivo" class="view-content hidden">
-            <h3>🏍 Drivo (Fazer 250 - 29km/L)</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-                <input type="number" id="km-inicial" placeholder="KM Inicial">
-                <input type="number" id="km-final" placeholder="KM Final">
-                <div style="grid-column: span 2;"><input type="number" id="preco-litro" placeholder="Preço Litro R$"></div>
-            </div>
-            <div class="drivo-card">
-                <div id="resultado-viagem" style="font-size: 24px; font-weight: bold; color: var(--warning-orange);">R$ 0,00</div>
-                <p id="detalhe-drivo" style="font-size: 14px; color: var(--text-gray);">Cálculo baseado em odômetro</p>
-            </div>
-            <button class="btn-add" style="margin-top: 15px; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular</button>
+    <div id="view-drivo" class="view-content hidden">
+        <h3>🏍 Drivo (Fazer 250 - 29km/L)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <input type="number" id="km-inicial" placeholder="KM Inicial">
+            <input type="number" id="km-final" placeholder="KM Final">
+            <div style="grid-column: span 2;"><input type="number" id="preco-litro" placeholder="Preço Litro R$"></div>
         </div>
+        <div class="drivo-card">
+            <div id="resultado-viagem" style="font-size: 24px; font-weight: bold; color: var(--warning-orange);">R$ 0,00</div>
+            <p id="detalhe-drivo" style="font-size: 14px; color: var(--text-gray);">Baseado em KM Rodado</p>
+        </div>
+        <button class="btn-add" style="margin-top: 15px; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular</button>
     </div>
 </div>
 
 <script>
-    // Usuário: weverson | Senha: Wf023240
-    const _0x1a2 = "d2V2ZXJzb24="; 
-    const _0x1b3 = "V2YwMjMyNDA="; 
+    const _0x1a2 = "d2V2ZXJzb24="; // weverson
+    const _0x1b3 = "V2YwMjMyNDA="; // Wf023240
     
+    // Inicia o banco de dados carregando o que já existe no LocalStorage
     let db = JSON.parse(localStorage.getItem('financas_weverson')) || [];
 
-    // Verifica se já existe uma sessão ativa ao carregar a página
     window.onload = function() {
         if(sessionStorage.getItem('session_active') === 'true') {
             showSystem();
@@ -174,7 +169,7 @@
         const u = document.getElementById('user-input').value;
         const p = document.getElementById('pass-input').value;
         if (btoa(u) === _0x1a2 && btoa(p) === _0x1b3) {
-            sessionStorage.setItem('session_active', 'true'); // Salva estado da sessão
+            sessionStorage.setItem('session_active', 'true');
             showSystem();
         } else {
             alert("Credenciais Inválidas!");
@@ -185,12 +180,12 @@
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-system').classList.remove('hidden');
         document.body.style.alignItems = "flex-start";
-        renderizar();
+        renderizar(); // Garante que os dados salvos apareçam na tela
     }
 
     function logout() {
-        sessionStorage.removeItem('session_active'); // Remove a sessão
-        window.location.reload(); // Volta para o login
+        sessionStorage.removeItem('session_active');
+        window.location.reload();
     }
 
     function mudarAba(aba) {
@@ -206,8 +201,16 @@
         const tipo = document.getElementById('tipo').value;
         if (!desc || isNaN(valor)) return;
 
-        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc, valor, tipo });
-        localStorage.setItem('financas_weverson', JSON.stringify(db)); // Salva no navegador
+        db.push({ 
+            data: new Date().toLocaleDateString('pt-BR'), 
+            desc, 
+            valor, 
+            tipo 
+        });
+        
+        // SALVA NO NAVEGADOR IMEDIATAMENTE
+        localStorage.setItem('financas_weverson', JSON.stringify(db));
+        
         document.getElementById('desc').value = "";
         document.getElementById('valor').value = "";
         renderizar();
@@ -217,16 +220,20 @@
         const feed = document.getElementById('feed-atividades');
         const tabela = document.getElementById('corpo-tabela');
         let r = 0, d = 0;
+        
         feed.innerHTML = ""; tabela.innerHTML = "";
         
         db.forEach(t => {
             if (t.tipo === 'receita') r += t.valor; else d += t.valor;
+            
             feed.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
                 <div>${t.desc}<br><small style="color: var(--text-gray)">${t.data}</small></div>
-                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toFixed(2)}</div>
+                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
             </div>`;
+            
             tabela.innerHTML += `<tr><td>${t.data}</td><td>${t.desc}</td><td>${t.tipo}</td><td>R$ ${t.valor.toFixed(2)}</td></tr>`;
         });
+        
         document.getElementById('saldo-total').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-receita').innerText = `R$ ${r.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('resumo-despesa').innerText = `R$ ${d.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -238,12 +245,13 @@
         const preco = parseFloat(document.getElementById('preco-litro').value);
         if (isNaN(ki) || isNaN(kf) || isNaN(preco)) return;
         const km = kf - ki;
-        const custo = (km / 29) * preco; // Média da Fazer 250
+        const custo = (km / 29) * preco; 
         document.getElementById('resultado-viagem').innerText = `R$ ${custo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('detalhe-drivo').innerText = `${km} km percorridos na sua Yamaha.`;
+        document.getElementById('detalhe-drivo').innerText = `${km} km rodados na Yamaha Fazer 250.`;
     }
 
     function exportarCSV() {
+        if (db.length === 0) return alert("Não há dados para exportar.");
         let csv = "Data;Descricao;Tipo;Valor\n";
         db.forEach(t => csv += `${t.data};${t.desc};${t.tipo};${t.valor.toFixed(2).replace('.', ',')}\n`);
         const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
@@ -251,14 +259,6 @@
         a.href = URL.createObjectURL(blob);
         a.download = "financas_weverson.csv";
         a.click();
-    }
-
-    function limparDados() {
-        if(confirm("Apagar todos os dados permanentemente?")) {
-            localStorage.removeItem('financas_weverson');
-            db = [];
-            renderizar();
-        }
     }
 </script>
 </body>
