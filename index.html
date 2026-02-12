@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financeiro Weverson</title>
+    <title>Drivo & Money</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22 fill=%22%230095ff%22>🖩</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22 fill=%22%230095ff%22>⚡</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -32,7 +32,6 @@
             min-height: 100vh;
             padding-top: 20px;
             user-select: none;
-            -webkit-user-select: none;
         }
 
         #login-screen {
@@ -47,9 +46,8 @@
         }
 
         #main-system { width: 100%; max-width: 1000px; padding: 20px; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
+        
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
@@ -70,29 +68,39 @@
 
         .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
         
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
+        /* FORM UNIFICADO */
+        .form-main { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .row { display: flex; gap: 10px; }
+        
         input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
             padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box;
-            user-select: auto;
         }
 
-        .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; }
+        .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; padding: 15px; }
         .btn-warning { background: var(--warning-orange); border: none; font-weight: bold; cursor: pointer; color: #050a1a; }
         .btn-logout { background: transparent; border: 1px solid var(--danger-red); color: var(--danger-red); padding: 5px 15px; cursor: pointer; border-radius: 8px; width: auto; font-size: 12px; }
 
+        /* SWITCH RECORRENCIA */
+        .switch-container { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--warning-orange); padding: 5px; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1e293b; transition: .4s; border-radius: 20px; border: 1px solid var(--border); }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--warning-orange); }
+        input:checked + .slider:before { transform: translateX(14px); }
+
         .loading { opacity: 0.4; pointer-events: none; }
         .hidden { display: none !important; }
-        
-        label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-transform: uppercase; margin-top: 10px;}
         .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dotted var(--border); font-size: 14px; }
+        label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-transform: uppercase; margin-top: 10px;}
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div style="font-size: 50px; color: var(--primary-blue); margin-bottom: 15px;"><i class="fa-solid fa-calculator"></i></div>
-    <h2 style="margin: 0;">Weverson</h2>
+    <div style="font-size: 50px; color: var(--primary-blue); margin-bottom: 15px;"><i class="fa-solid fa-bolt"></i></div>
+    <h2 style="margin: 0;">Drivo & Money</h2>
     <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Drivo & Money</p>
     <input type="text" id="user-input" placeholder="Usuário">
     <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
@@ -102,8 +110,8 @@
 <div id="main-system" class="hidden">
     <div class="header">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <i class="fa-solid fa-calculator" style="color: var(--primary-blue); font-size: 24px;"></i>
-            <h1 style="font-size: 20px; margin: 0;">Financeiro</h1>
+            <i class="fa-solid fa-bolt" style="color: var(--primary-blue); font-size: 24px;"></i>
+            <h1 style="font-size: 20px; margin: 0;">Drivo & Money</h1>
         </div>
         <div style="display: flex; gap: 10px;">
             <select id="filtro-mes" style="width: auto;" onchange="render()">
@@ -117,8 +125,8 @@
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" id="btn-lanc" onclick="mudarAba('lancamentos')">Lançamentos</button>
-        <button class="tab-btn" id="btn-moto" onclick="mudarAba('moto')" style="color: var(--warning-orange)">🏍 DRIVO</button>
+        <button class="tab-btn active" id="btn-lanc" onclick="mudarAba('lancamentos')">Resumo & Ganhos</button>
+        <button class="tab-btn" id="btn-moto" onclick="mudarAba('moto')" style="color: var(--warning-orange)">🏍 MOTO</button>
         <button class="tab-btn" onclick="mudarAba('perfil')">⚙ Perfil</button>
     </div>
 
@@ -129,58 +137,64 @@
         </div>
 
         <div class="stats-grid">
-            <div class="stat-box up">
-                <small>RECEITAS NO MÊS</small>
-                <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
-            </div>
-            <div class="stat-box down">
-                <small>DESPESAS NO MÊS</small>
-                <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
-            </div>
+            <div class="stat-box up"><small>RECEITAS MÊS</small><div id="resumo-receita">R$ 0,00</div></div>
+            <div class="stat-box down"><small>DESPESAS MÊS</small><div id="resumo-despesa">R$ 0,00</div></div>
         </div>
 
-        <div class="form-grid">
-            <input type="text" id="desc" placeholder="Descrição">
-            <input type="number" id="valor" placeholder="R$">
-            <select id="tipo">
-                <option value="receita">Receita</option>
-                <option value="despesa">Despesa</option>
-            </select>
-            <button class="btn-add" id="btn-save-lanc" onclick="salvarLancamento()">Salvar</button>
+        <div class="form-main">
+            <div class="row">
+                <input type="text" id="desc" placeholder="O que é?">
+                <input type="number" id="valor" placeholder="R$ 0,00">
+            </div>
+            <div class="row">
+                <select id="tipo">
+                    <option value="receita">Entrada (Receita)</option>
+                    <option value="despesa">Saída (Despesa)</option>
+                </select>
+                <div class="switch-container">
+                    <span>Lançar 12 meses?</span>
+                    <label class="switch">
+                        <input type="checkbox" id="is-fixo">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <button class="btn-add" id="btn-save" onclick="processarLancamento()">Salvar Lançamento</button>
         </div>
+
         <div id="feed-atividades"></div>
     </div>
 
     <div id="view-moto" class="view-content hidden">
         <h3 style="color: var(--warning-orange)">Calculadora Fazer 250</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="row" style="margin-bottom: 10px;">
             <input type="number" id="km-inicial" placeholder="KM Inicial">
             <input type="number" id="km-final" placeholder="KM Final">
         </div>
         <div class="balance-card" style="padding: 15px; background: #1e293b;">
             <div id="res-viagem" style="font-size: 24px; color: var(--warning-orange); font-weight: bold;">R$ 0,00</div>
-            <small id="detalhe-km">Custo Estimado da Viagem</small>
+            <small>Custo Estimado</small>
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div class="row">
             <button class="btn-warning" onclick="calcDrivo()">Calcular</button>
-            <button class="btn-add" id="btn-save-moto" onclick="salvarViagem()" style="opacity:0.5" disabled>Lançar Gasto</button>
+            <button class="btn-add" id="btn-save-moto" onclick="salvarViagem()" style="opacity:0.5" disabled>Lançar no Caixa</button>
         </div>
         <div id="feed-moto" style="margin-top: 20px;"></div>
     </div>
 
     <div id="view-perfil" class="view-content hidden">
-        <h3>Configurações e Localização</h3>
-        <label>Estado (UF)</label>
-        <select id="perfil-uf" onchange="carregarCidades()">
-            <option value="CE">Ceará</option><option value="MA">Maranhão</option>
-        </select>
-        <label>Cidade Atual</label>
-        <select id="perfil-cidade"></select>
-        <label>Autonomia (km/L)</label>
-        <input type="number" id="perf-autonomia" value="29">
-        <label>Preço Combustível (R$)</label>
-        <input type="number" id="perf-preco" value="6.15">
-        <button class="btn-add" style="margin-top: 20px;" onclick="salvarPerfil()">Salvar Configurações</button>
+        <h3>Configurações</h3>
+        <label>Localização</label>
+        <div class="row">
+            <select id="perfil-uf" onchange="carregarCidades()"><option value="CE">Ceará</option><option value="MA">Maranhão</option></select>
+            <select id="perfil-cidade"></select>
+        </div>
+        <label>Dados da Moto</label>
+        <div class="row">
+            <input type="number" id="perf-autonomia" placeholder="km/L">
+            <input type="number" id="perf-preco" placeholder="Preço Litro">
+        </div>
+        <button class="btn-add" style="margin-top: 20px;" onclick="salvarPerfil()">Atualizar Dados</button>
     </div>
 </div>
 
@@ -231,18 +245,23 @@
     }
 
     function render() {
-        const mes = document.getElementById('filtro-mes').value;
+        const mesFiltro = document.getElementById('filtro-mes').value;
         let saldoTotal = 0, recMes = 0, desMes = 0;
-        
         const fLanc = document.getElementById('feed-atividades'); fLanc.innerHTML = "";
+
         db_lanc.forEach(r => {
             const [data, desc, valor, tipo] = r;
             const v = tipo === 'receita' ? valor : -valor;
-            saldoTotal += v; // Acumulado sempre soma tudo da nuvem
             
-            if(data.split('/')[1] === mes) {
+            // O saldo total considera TUDO o que já aconteceu ou está agendado na planilha
+            saldoTotal += v;
+            
+            if(data.split('/')[1] === mesFiltro) {
                 tipo === 'receita' ? recMes += valor : desMes += valor;
-                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'var(--success-green)':'var(--danger-red)'}">R$ ${valor.toFixed(2)}</div></div>`;
+                fLanc.innerHTML += `<div class="history-item">
+                    <div>${desc}${desc.includes('🔁') ? '' : ''}<br><small>${data}</small></div>
+                    <div style="color:${tipo==='receita'?'var(--success-green)':'var(--danger-red)'}">R$ ${valor.toFixed(2)}</div>
+                </div>`;
             }
         });
 
@@ -252,18 +271,41 @@
 
         const fMoto = document.getElementById('feed-moto'); fMoto.innerHTML = "";
         db_moto.slice().reverse().forEach(r => {
-            if(r[0].split('/')[1] === mes) {
+            if(r[0].split('/')[1] === mesFiltro) {
                 fMoto.innerHTML += `<div class="history-item"><div>Viagem - ${r[1]}km<br><small>${r[0]}</small></div><div style="color:var(--warning-orange)">R$ ${r[2].toFixed(2)}</div></div>`;
             }
         });
     }
 
-    async function salvarLancamento() {
-        const desc = document.getElementById('desc').value; const valor = parseFloat(document.getElementById('valor').value);
-        if (!desc || isNaN(valor)) return;
-        const data = [new Date().toLocaleDateString('pt-BR'), desc, valor, document.getElementById('tipo').value];
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: data }) });
+    async function processarLancamento() {
+        const descBase = document.getElementById('desc').value;
+        const valor = parseFloat(document.getElementById('valor').value);
+        const tipo = document.getElementById('tipo').value;
+        const isFixo = document.getElementById('is-fixo').checked;
+
+        if (!descBase || isNaN(valor)) return;
+
+        const btn = document.getElementById('btn-save');
+        btn.innerText = "Sincronizando..."; btn.disabled = true;
+
+        if (isFixo) {
+            // Gerar 12 meses
+            for (let i = 0; i < 12; i++) {
+                let d = new Date();
+                d.setMonth(d.getMonth() + i);
+                const dataFormatada = d.toLocaleDateString('pt-BR');
+                const descFinal = `${descBase} 🔁 (${i+1}/12)`;
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: [dataFormatada, descFinal, valor, tipo] }) });
+            }
+        } else {
+            // Lançamento Único
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: [dataHoje, descBase, valor, tipo] }) });
+        }
+
         document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
+        document.getElementById('is-fixo').checked = false;
+        btn.innerText = "Salvar Lançamento"; btn.disabled = false;
         sync();
     }
 
@@ -277,7 +319,7 @@
     }
 
     async function salvarViagem() {
-        const data = [new Date().toLocaleDateString('pt-BR'), window.tempKm, window.tempCusto, "Viagem"];
+        const data = [new Date().toLocaleDateString('pt-BR'), window.tempKm, window.tempCusto, "Abastecimento"];
         await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Moto", valores: data }) });
         sync();
     }
@@ -291,7 +333,7 @@
 
     function salvarPerfil() {
         config = { uf: document.getElementById('perfil-uf').value, cidade: document.getElementById('perfil-cidade').value, autonomia: parseFloat(document.getElementById('perf-autonomia').value), preco: parseFloat(document.getElementById('perf-preco').value) };
-        localStorage.setItem('conf_w', JSON.stringify(config)); alert("Salvo!");
+        localStorage.setItem('conf_w', JSON.stringify(config)); alert("Dados Atualizados!");
     }
 
     function logout() { sessionStorage.removeItem('active'); window.location.reload(); }
