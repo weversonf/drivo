@@ -6,7 +6,6 @@
     <title>Financeiro Weverson</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22 fill=%22%230095ff%22>🖩</text></svg>">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -36,7 +35,6 @@
             -webkit-user-select: none;
         }
 
-        /* LOGIN SCREEN */
         #login-screen {
             background: var(--card-dark);
             padding: 40px;
@@ -48,27 +46,20 @@
             margin-top: 50px;
         }
 
-        .logo-icon {
-            font-size: 50px;
-            color: var(--primary-blue);
-            margin-bottom: 15px;
-        }
-
-        /* SYSTEM LAYOUT */
         #main-system { width: 100%; max-width: 1000px; padding: 20px; }
         
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
         .balance-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
             text-align: center;
         }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+        .stat-box.up { border-bottom: 4px solid var(--success-green); }
+        .stat-box.down { border-bottom: 4px solid var(--danger-red); }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .tab-btn {
@@ -79,7 +70,6 @@
 
         .view-content { background: var(--card-dark); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
         
-        /* INPUTS E BOTÕES */
         .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
         input, select, button {
             background: #1e293b; border: 1px solid var(--border); color: white;
@@ -95,18 +85,15 @@
         .hidden { display: none !important; }
         
         label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-transform: uppercase; margin-top: 10px;}
-        
         .history-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dotted var(--border); font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="logo-icon">
-        <i class="fa-solid fa-calculator"></i>
-    </div>
+    <div style="font-size: 50px; color: var(--primary-blue); margin-bottom: 15px;"><i class="fa-solid fa-calculator"></i></div>
     <h2 style="margin: 0;">Weverson</h2>
-    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Cloud System ☁️</p>
+    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 30px;">Cloud System Ativo ☁️</p>
     <input type="text" id="user-input" placeholder="Usuário">
     <input type="password" id="pass-input" placeholder="Senha" style="margin-top: 10px; margin-bottom: 20px;">
     <button class="btn-add" onclick="validaAcesso()">Entrar</button>
@@ -119,7 +106,7 @@
             <h1 style="font-size: 20px; margin: 0;">Financeiro</h1>
         </div>
         <div style="display: flex; gap: 10px;">
-            <select id="filtro-mes" style="width: auto;" onchange="sync()">
+            <select id="filtro-mes" style="width: auto;" onchange="render()">
                 <option value="01">Jan</option><option value="02" selected>Fev</option><option value="03">Mar</option>
                 <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
                 <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
@@ -137,15 +124,27 @@
 
     <div id="view-lancamentos" class="view-content">
         <div class="balance-card">
-            <span style="color: var(--text-gray)">SALDO ACUMULADO</span>
-            <h2 id="saldo-total">R$ 0,00</h2>
+            <span style="color: var(--text-gray)">SALDO TOTAL ACUMULADO</span>
+            <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
         </div>
+
+        <div class="stats-grid">
+            <div class="stat-box up">
+                <small>RECEITAS NO MÊS</small>
+                <div id="resumo-receita" style="color: var(--success-green); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+            <div class="stat-box down">
+                <small>DESPESAS NO MÊS</small>
+                <div id="resumo-despesa" style="color: var(--danger-red); font-weight: bold; font-size: 1.2em;">R$ 0,00</div>
+            </div>
+        </div>
+
         <div class="form-grid">
             <input type="text" id="desc" placeholder="Descrição">
-            <input type="number" id="valor" placeholder="Valor R$">
+            <input type="number" id="valor" placeholder="R$">
             <select id="tipo">
-                <option value="receita">Receita (+)</option>
-                <option value="despesa">Despesa (-)</option>
+                <option value="receita">Receita</option>
+                <option value="despesa">Despesa</option>
             </select>
             <button class="btn-add" id="btn-save-lanc" onclick="salvarLancamento()">Salvar</button>
         </div>
@@ -160,20 +159,26 @@
         </div>
         <div class="balance-card" style="padding: 15px; background: #1e293b;">
             <div id="res-viagem" style="font-size: 24px; color: var(--warning-orange); font-weight: bold;">R$ 0,00</div>
-            <small id="detalhe-km" style="color: var(--text-gray)">Custo Estimado</small>
+            <small id="detalhe-km">Custo Estimado da Viagem</small>
         </div>
         <div style="display: flex; gap: 10px;">
             <button class="btn-warning" onclick="calcDrivo()">Calcular</button>
             <button class="btn-add" id="btn-save-moto" onclick="salvarViagem()" style="opacity:0.5" disabled>Lançar Gasto</button>
         </div>
-        <div id="feed-moto" style="margin-top: 25px;"></div>
+        <div id="feed-moto" style="margin-top: 20px;"></div>
     </div>
 
     <div id="view-perfil" class="view-content hidden">
-        <h3>Configurações de Perfil</h3>
-        <label>Autonomia da Moto (km/L)</label>
+        <h3>Configurações e Localização</h3>
+        <label>Estado (UF)</label>
+        <select id="perfil-uf" onchange="carregarCidades()">
+            <option value="CE">Ceará</option><option value="MA">Maranhão</option>
+        </select>
+        <label>Cidade Atual</label>
+        <select id="perfil-cidade"></select>
+        <label>Autonomia (km/L)</label>
         <input type="number" id="perf-autonomia" value="29">
-        <label>Preço Combustível Médio (R$)</label>
+        <label>Preço Combustível (R$)</label>
         <input type="number" id="perf-preco" value="6.15">
         <button class="btn-add" style="margin-top: 20px;" onclick="salvarPerfil()">Salvar Configurações</button>
     </div>
@@ -181,100 +186,100 @@
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxhkQ_lxtxgUTT51hC3yzEi1T8ebdTVuXqJyyaYEpxhp_w0mfuRvUBFAItpyBD0pvrB6Q/exec";
-    const _0x1a2 = "d2V2ZXJzb24="; // weverson
-    const _0x1b3 = "V2YwMjMyNDA="; // Wf023240
+    const _0x1a2 = "d2V2ZXJzb24="; 
+    const _0x1b3 = "V2YwMjMyNDA="; 
     
     let db_lanc = [];
     let db_moto = [];
-    let config = JSON.parse(localStorage.getItem('conf_w')) || { autonomia: 29, preco: 6.15 };
-    let calculoTemp = 0;
+    let config = JSON.parse(localStorage.getItem('conf_w')) || { uf: 'CE', cidade: 'Fortaleza', autonomia: 29, preco: 6.15 };
+    const cidadesDB = { "CE": ["Fortaleza", "Canindé", "Sobral", "Tianguá", "Crateús"], "MA": ["Imperatriz", "São Luís"] };
 
     window.onload = () => { if(sessionStorage.getItem('active') === 'true') showSystem(); };
 
     function validaAcesso() {
         if (btoa(document.getElementById('user-input').value) === _0x1a2 && btoa(document.getElementById('pass-input').value) === _0x1b3) {
-            sessionStorage.setItem('active', 'true');
-            showSystem();
-        } else alert("Usuário ou senha incorretos.");
+            sessionStorage.setItem('active', 'true'); showSystem();
+        } else alert("Acesso negado.");
     }
 
     function showSystem() {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-system').classList.remove('hidden');
+        document.getElementById('perfil-uf').value = config.uf;
+        carregarCidades();
+        document.getElementById('perfil-cidade').value = config.cidade;
         document.getElementById('perf-autonomia').value = config.autonomia;
         document.getElementById('perf-preco').value = config.preco;
         sync();
     }
 
+    function carregarCidades() {
+        const uf = document.getElementById('perfil-uf').value;
+        const sel = document.getElementById('perfil-cidade'); sel.innerHTML = '';
+        cidadesDB[uf].forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+    }
+
     async function sync() {
-        const sys = document.getElementById('main-system');
-        sys.classList.add('loading');
+        const sys = document.getElementById('main-system'); sys.classList.add('loading');
         try {
             const resLanc = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "get", aba: "Lancamentos" }) });
             db_lanc = await resLanc.json();
             const resMoto = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "get", aba: "Moto" }) });
             db_moto = await resMoto.json();
             render();
-        } catch(e) { alert("Erro de conexão com a nuvem."); }
-        finally { sys.classList.remove('loading'); }
+        } finally { sys.classList.remove('loading'); }
+    }
+
+    function render() {
+        const mes = document.getElementById('filtro-mes').value;
+        let saldoTotal = 0, recMes = 0, desMes = 0;
+        
+        const fLanc = document.getElementById('feed-atividades'); fLanc.innerHTML = "";
+        db_lanc.forEach(r => {
+            const [data, desc, valor, tipo] = r;
+            const v = tipo === 'receita' ? valor : -valor;
+            saldoTotal += v; // Acumulado sempre soma tudo da nuvem
+            
+            if(data.split('/')[1] === mes) {
+                tipo === 'receita' ? recMes += valor : desMes += valor;
+                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'var(--success-green)':'var(--danger-red)'}">R$ ${valor.toFixed(2)}</div></div>`;
+            }
+        });
+
+        document.getElementById('saldo-total').innerText = `R$ ${saldoTotal.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+        document.getElementById('resumo-receita').innerText = `R$ ${recMes.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+        document.getElementById('resumo-despesa').innerText = `R$ ${desMes.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+
+        const fMoto = document.getElementById('feed-moto'); fMoto.innerHTML = "";
+        db_moto.slice().reverse().forEach(r => {
+            if(r[0].split('/')[1] === mes) {
+                fMoto.innerHTML += `<div class="history-item"><div>Viagem - ${r[1]}km<br><small>${r[0]}</small></div><div style="color:var(--warning-orange)">R$ ${r[2].toFixed(2)}</div></div>`;
+            }
+        });
     }
 
     async function salvarLancamento() {
-        const desc = document.getElementById('desc').value;
-        const valor = parseFloat(document.getElementById('valor').value);
+        const desc = document.getElementById('desc').value; const valor = parseFloat(document.getElementById('valor').value);
         if (!desc || isNaN(valor)) return;
         const data = [new Date().toLocaleDateString('pt-BR'), desc, valor, document.getElementById('tipo').value];
-        document.getElementById('btn-save-lanc').innerText = "...";
         await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Lancamentos", valores: data }) });
-        document.getElementById('btn-save-lanc').innerText = "Salvar";
         document.getElementById('desc').value = ""; document.getElementById('valor').value = "";
-        sync();
-    }
-
-    async function salvarViagem() {
-        const dist = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
-        const data = [new Date().toLocaleDateString('pt-BR'), dist, calculoTemp, "Viagem"];
-        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Moto", valores: data }) });
-        document.getElementById('km-inicial').value = ""; document.getElementById('km-final').value = "";
         sync();
     }
 
     function calcDrivo() {
         const d = document.getElementById('km-final').value - document.getElementById('km-inicial').value;
-        if(d <= 0) return alert("Odômetro final deve ser maior que o inicial.");
-        calculoTemp = (d / config.autonomia) * config.preco;
-        document.getElementById('res-viagem').innerText = `R$ ${calculoTemp.toFixed(2)}`;
-        document.getElementById('detalhe-km').innerText = `Distância: ${d}km percorridos`;
-        const btn = document.getElementById('btn-save-moto');
-        btn.disabled = false; btn.style.opacity = 1;
+        if(d <= 0) return alert("Erro KM");
+        const custo = (d / config.autonomia) * config.preco;
+        document.getElementById('res-viagem').innerText = `R$ ${custo.toFixed(2)}`;
+        document.getElementById('btn-save-moto').disabled = false; document.getElementById('btn-save-moto').style.opacity = 1;
+        window.tempCusto = custo; window.tempKm = d;
     }
 
-    function render() {
-        const mes = document.getElementById('filtro-mes').value;
-        let saldo = 0;
-        
-        // Feed Lançamentos
-        const fLanc = document.getElementById('feed-atividades');
-        fLanc.innerHTML = "";
-        db_lanc.forEach(r => {
-            const [data, desc, valor, tipo] = r;
-            const v = tipo === 'receita' ? valor : -valor;
-            saldo += v;
-            if(data.split('/')[1] === mes) {
-                fLanc.innerHTML += `<div class="history-item"><div>${desc}<br><small>${data}</small></div><div style="color:${tipo==='receita'?'#00d28a':'#ff4d6d'}">R$ ${valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>`;
-            }
-        });
-        document.getElementById('saldo-total').innerText = `R$ ${saldo.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
-
-        // Feed Moto
-        const fMoto = document.getElementById('feed-moto');
-        fMoto.innerHTML = "";
-        db_moto.slice().reverse().forEach(r => {
-            const [data, km, valor, detalhe] = r;
-            if(data.split('/')[1] === mes) {
-                fMoto.innerHTML += `<div class="history-item"><div>${detalhe} - ${km}km<br><small>${data}</small></div><div style="color:var(--warning-orange)">R$ ${valor.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>`;
-            }
-        });
+    async function salvarViagem() {
+        const data = [new Date().toLocaleDateString('pt-BR'), window.tempKm, window.tempCusto, "Viagem"];
+        await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "add", aba: "Moto", valores: data }) });
+        sync();
     }
 
     function mudarAba(aba) {
@@ -285,9 +290,8 @@
     }
 
     function salvarPerfil() {
-        config = { autonomia: parseFloat(document.getElementById('perf-autonomia').value), preco: parseFloat(document.getElementById('perf-preco').value) };
-        localStorage.setItem('conf_w', JSON.stringify(config));
-        alert("Configurações salvas localmente!");
+        config = { uf: document.getElementById('perfil-uf').value, cidade: document.getElementById('perfil-cidade').value, autonomia: parseFloat(document.getElementById('perf-autonomia').value), preco: parseFloat(document.getElementById('perf-preco').value) };
+        localStorage.setItem('conf_w', JSON.stringify(config)); alert("Salvo!");
     }
 
     function logout() { sessionStorage.removeItem('active'); window.location.reload(); }
