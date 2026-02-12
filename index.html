@@ -46,9 +46,6 @@
             padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);
         }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: var(--card-dark); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
-
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .tab-btn {
             background: none; border: none; color: var(--text-gray);
@@ -65,17 +62,15 @@
         }
 
         .btn-add { background: var(--primary-blue); border: none; font-weight: bold; cursor: pointer; color: white; }
-        .btn-export { background: var(--success-green); border: none; font-weight: bold; cursor: pointer; color: #050a1a; padding: 10px 20px; border-radius: 8px; width: auto; }
+        .btn-warning { background: var(--warning-orange); border: none; font-weight: bold; cursor: pointer; color: #050a1a; }
         .btn-logout { background: transparent; border: 1px solid var(--danger-red); color: var(--danger-red); padding: 5px 15px; cursor: pointer; border-radius: 8px; width: auto; font-size: 12px; }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: var(--text-gray); padding: 12px; border-bottom: 2px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-
-        .drivo-card { border-left: 4px solid var(--warning-orange); padding: 20px; background: #1e293b; border-radius: 12px; margin-top: 20px; }
+        .drivo-card { border-left: 4px solid var(--warning-orange); padding: 20px; background: #1e293b; border-radius: 12px; margin-top: 20px; margin-bottom: 20px; }
         .hidden { display: none !important; }
         
         label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; }
+        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 13px; }
+        .maint-badge { background: #1e293b; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--warning-orange); border: 1px solid var(--warning-orange); }
     </style>
 </head>
 <body>
@@ -91,14 +86,11 @@
 <div id="main-system" class="hidden">
     <div class="header">
         <h1>Financeiro</h1>
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <button class="btn-export" onclick="exportarCSV()">⬇ Exportar Excel</button>
-            <button class="btn-logout" onclick="logout()">Sair</button>
-        </div>
+        <button class="btn-logout" onclick="logout()">Sair</button>
     </div>
 
     <div class="balance-card">
-        <span style="color: var(--text-gray)">SALDO ATUAL</span>
+        <span style="color: var(--text-gray)">SALDO GERAL</span>
         <h2 id="saldo-total" style="font-size: 32px; margin: 10px 0;">R$ 0,00</h2>
     </div>
 
@@ -122,70 +114,65 @@
     </div>
 
     <div id="view-drivo" class="view-content hidden">
-        <h3>🏍 Calculadora Drivo</h3>
-        <p id="perfil-aviso" style="color: var(--danger-red); font-size: 12px; margin-bottom: 15px;">Configure seu perfil primeiro!</p>
+        <h3 style="color: var(--warning-orange)">Gestão Fazer 250</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div>
-                <label>KM Inicial</label>
-                <input type="number" id="km-inicial" placeholder="0">
+        <div style="background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <label style="font-weight: bold; color: var(--warning-orange); margin-bottom: 10px;">⛽ Calculadora de Viagem</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="number" id="km-inicial" placeholder="KM Inicial">
+                <input type="number" id="km-final" placeholder="KM Final">
             </div>
-            <div>
-                <label>KM Final</label>
-                <input type="number" id="km-final" placeholder="0">
+            <div id="resultado-viagem" style="font-size: 20px; font-weight: bold; color: var(--warning-orange); margin-top: 10px;">R$ 0,00</div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-warning" onclick="calcularDrivo()">Calcular</button>
+                <button id="btn-lancar-moto" class="btn-add" style="opacity: 0.5; cursor: not-allowed;" onclick="lancarGastoMoto()" disabled>Lançar Viagem</button>
             </div>
         </div>
-        
-        <div class="drivo-card">
-            <div id="resultado-viagem" style="font-size: 24px; font-weight: bold; color: var(--warning-orange);">R$ 0,00</div>
-            <p id="detalhe-drivo" style="font-size: 14px; color: var(--text-gray);">Custo estimado da rota</p>
+
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px;">
+            <label style="font-weight: bold; color: var(--text-white); margin-bottom: 10px;">🔧 Registro de Manutenção</label>
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
+                <select id="maint-item">
+                    <option value="Troca de Óleo">Troca de Óleo</option>
+                    <option value="Pneu Dianteiro">Pneu Dianteiro</option>
+                    <option value="Pneu Traseiro">Pneu Traseiro</option>
+                    <option value="Relação">Relação (Kit)</option>
+                    <option value="Pastilha Freio">Pastilha de Freio</option>
+                    <option value="Filtro de Ar">Filtro de Ar</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <input type="number" id="maint-km" placeholder="KM Atual">
+                <input type="number" id="maint-valor" placeholder="Valor R$">
+            </div>
+            <button class="btn-add" style="margin-top: 10px; width: 100%;" onclick="lancarManutencao()">Registrar Manutenção</button>
         </div>
-        <button class="btn-add" style="margin-top: 15px; background: var(--warning-orange);" onclick="calcularDrivo()">Calcular Viagem</button>
+
+        <h4 style="margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Histórico Drivo</h4>
+        <div id="feed-moto"></div>
     </div>
 
     <div id="view-perfil" class="view-content hidden">
-        <h3>⚙ Configurações de Perfil</h3>
+        <h3>⚙ Configurações</h3>
         <div style="display: grid; gap: 15px; margin-top: 15px;">
-            <div>
-                <label>Estado (UF)</label>
-                <select id="perfil-uf" onchange="carregarCidades()">
-                    <option value="">Selecione...</option>
-                    <option value="CE">Ceará</option>
-                    <option value="MA">Maranhão</option>
-                    <option value="PI">Piauí</option>
-                </select>
-            </div>
-            <div>
-                <label>Cidade</label>
-                <select id="perfil-cidade" onchange="buscarPrecoCombustivel()">
-                    <option value="">Selecione o estado primeiro</option>
-                </select>
-            </div>
-            <div>
-                <label>Autonomia do Veículo (km/L)</label>
-                <input type="number" id="perfil-autonomia" placeholder="Ex: 29" value="29">
-            </div>
-            <div style="background: #1e293b; padding: 15px; border-radius: 8px;">
-                <label>Preço Atual da Gasolina (R$)</label>
-                <input type="number" id="perfil-preco-litro" step="0.01" placeholder="Calculando automaticamente...">
-            </div>
+            <div><label>Estado (UF)</label><select id="perfil-uf" onchange="carregarCidades()"><option value="CE">Ceará</option><option value="MA">Maranhão</option></select></div>
+            <div><label>Cidade</label><select id="perfil-cidade" onchange="buscarPrecoCombustivel()"></select></div>
+            <div><label>Autonomia (km/L)</label><input type="number" id="perfil-autonomia" value="29"></div>
+            <div><label>Preço do Litro R$</label><input type="number" id="perfil-preco-litro" step="0.01"></div>
             <button class="btn-add" onclick="salvarPerfil()">Salvar Perfil</button>
         </div>
     </div>
 </div>
 
 <script>
-    const _0x1a2 = "d2V2ZXJzb24="; // weverson
-    const _0x1b3 = "V2YwMjMyNDA="; // Wf023240
+    const _0x1a2 = "d2V2ZXJzb24="; 
+    const _0x1b3 = "V2YwMjMyNDA="; 
     
     let db = JSON.parse(localStorage.getItem('financas_weverson')) || [];
-    let perfil = JSON.parse(localStorage.getItem('perfil_weverson')) || { uf: '', cidade: '', autonomia: 29, preco: 0 };
+    let db_moto = JSON.parse(localStorage.getItem('moto_weverson')) || [];
+    let perfil = JSON.parse(localStorage.getItem('perfil_weverson')) || { uf: 'CE', cidade: 'Fortaleza', autonomia: 29, preco: 6.00 };
+    let ultimoCalculo = 0;
 
-    const cidadesDB = {
-        "CE": ["Fortaleza", "Canindé", "Crateús", "Sobral", "Tianguá"],
-        "MA": ["Imperatriz", "São Luís"],
-        "PI": ["Teresina", "Parnaíba"]
-    };
+    const cidadesDB = { "CE": ["Fortaleza", "Canindé", "Sobral"], "MA": ["Imperatriz", "São Luís"] };
 
     window.onload = function() {
         if(sessionStorage.getItem('session_active') === 'true') showSystem();
@@ -196,33 +183,28 @@
             btoa(document.getElementById('pass-input').value) === _0x1b3) {
             sessionStorage.setItem('session_active', 'true');
             showSystem();
-        } else alert("Credenciais Inválidas!");
+        } else alert("Acesso Negado!");
     }
 
     function showSystem() {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-system').classList.remove('hidden');
-        document.body.style.alignItems = "flex-start";
         carregarDadosPerfil();
         renderizar();
+        renderizarMoto();
     }
 
     function carregarCidades() {
         const uf = document.getElementById('perfil-uf').value;
-        const cidadeSelect = document.getElementById('perfil-cidade');
-        cidadeSelect.innerHTML = '<option value="">Selecione...</option>';
-        if(uf) {
-            cidadesDB[uf].forEach(c => cidadeSelect.innerHTML += `<option value="${c}">${c}</option>`);
-        }
+        const sel = document.getElementById('perfil-cidade');
+        sel.innerHTML = '';
+        cidadesDB[uf].forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+        buscarPrecoCombustivel();
     }
 
-    // Simulação de busca em banco de dados/API de preços por cidade
     function buscarPrecoCombustivel() {
-        const cidade = document.getElementById('perfil-cidade').value;
-        const precoInput = document.getElementById('perfil-preco-litro');
-        // Valores base simulados para demonstração
-        const precos = { "Fortaleza": 6.15, "Imperatriz": 5.95, "Canindé": 6.20 };
-        precoInput.value = precos[cidade] || 6.00;
+        const p = { "Fortaleza": 6.15, "Imperatriz": 5.90, "Canindé": 6.25 };
+        document.getElementById('perfil-preco-litro').value = p[document.getElementById('perfil-cidade').value] || 6.00;
     }
 
     function salvarPerfil() {
@@ -233,31 +215,84 @@
             preco: parseFloat(document.getElementById('perfil-preco-litro').value)
         };
         localStorage.setItem('perfil_weverson', JSON.stringify(perfil));
-        alert("Perfil atualizado com sucesso!");
-        carregarDadosPerfil();
+        alert("Configurações Salvas!");
     }
 
     function carregarDadosPerfil() {
-        if(perfil.cidade) {
-            document.getElementById('perfil-uf').value = perfil.uf;
-            carregarCidades();
-            document.getElementById('perfil-cidade').value = perfil.cidade;
-            document.getElementById('perfil-autonomia').value = perfil.autonomia;
-            document.getElementById('perfil-preco-litro').value = perfil.preco;
-            document.getElementById('perfil-aviso').classList.add('hidden');
-        }
+        document.getElementById('perfil-uf').value = perfil.uf;
+        carregarCidades();
+        document.getElementById('perfil-cidade').value = perfil.cidade;
+        document.getElementById('perfil-autonomia').value = perfil.autonomia;
+        document.getElementById('perfil-preco-litro').value = perfil.preco;
     }
 
     function calcularDrivo() {
         const ki = parseFloat(document.getElementById('km-inicial').value);
         const kf = parseFloat(document.getElementById('km-final').value);
-        if(!perfil.autonomia || isNaN(ki) || isNaN(kf)) return alert("Verifique o perfil e os KMs.");
+        if(isNaN(ki) || isNaN(kf) || kf <= ki) return alert("Verifique os KMs inseridos.");
         
         const dist = kf - ki;
-        const custo = (dist / perfil.autonomia) * perfil.preco;
+        ultimoCalculo = (dist / perfil.autonomia) * perfil.preco;
         
-        document.getElementById('resultado-viagem').innerText = `R$ ${custo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('detalhe-drivo').innerText = `${dist}km rodados em ${perfil.cidade}.`;
+        document.getElementById('resultado-viagem').innerText = `R$ ${ultimoCalculo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        
+        const btn = document.getElementById('btn-lancar-moto');
+        btn.disabled = false; btn.style.opacity = "1"; btn.style.cursor = "pointer";
+    }
+
+    function lancarGastoMoto() {
+        db_moto.push({
+            data: new Date().toLocaleDateString('pt-BR'),
+            tipo: 'VIAGEM',
+            detalhe: `${document.getElementById('km-final').value - document.getElementById('km-inicial').value}km`,
+            valor: ultimoCalculo,
+            km: document.getElementById('km-final').value
+        });
+        salvarERenderizarMoto();
+    }
+
+    function lancarManutencao() {
+        const item = document.getElementById('maint-item').value;
+        const km = document.getElementById('maint-km').value;
+        const valor = parseFloat(document.getElementById('maint-valor').value);
+        
+        if(!km || isNaN(valor)) return alert("Preencha KM e Valor da manutenção.");
+
+        db_moto.push({
+            data: new Date().toLocaleDateString('pt-BR'),
+            tipo: 'MANUTENÇÃO',
+            detalhe: item,
+            valor: valor,
+            km: km
+        });
+        
+        document.getElementById('maint-km').value = "";
+        document.getElementById('maint-valor').value = "";
+        salvarERenderizarMoto();
+    }
+
+    function salvarERenderizarMoto() {
+        localStorage.setItem('moto_weverson', JSON.stringify(db_moto));
+        renderizarMoto();
+        // Reset Calculadora
+        document.getElementById('km-inicial').value = "";
+        document.getElementById('km-final').value = "";
+        document.getElementById('btn-lancar-moto').disabled = true;
+    }
+
+    function renderizarMoto() {
+        const feed = document.getElementById('feed-moto');
+        feed.innerHTML = "";
+        db_moto.slice().reverse().forEach(m => {
+            const isMaint = m.tipo === 'MANUTENÇÃO';
+            feed.innerHTML += `<div class="history-item">
+                <div style="display:flex; flex-direction:column">
+                    <span>${m.data} - <small>${m.km} KM</small></span>
+                    <span style="font-size:11px; color:var(--text-gray)">${isMaint ? '<span class="maint-badge">'+m.detalhe+'</span>' : 'Viagem: '+m.detalhe}</span>
+                </div>
+                <span style="color:${isMaint ? 'var(--danger-red)' : 'var(--warning-orange)'}">R$ ${m.valor.toFixed(2)}</span>
+            </div>`;
+        });
     }
 
     function mudarAba(aba) {
@@ -268,10 +303,10 @@
     }
 
     function adicionar() {
-        const desc = document.getElementById('desc').value;
-        const valor = parseFloat(document.getElementById('valor').value);
-        if (!desc || isNaN(valor)) return;
-        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc, valor, tipo: document.getElementById('tipo').value });
+        const d = document.getElementById('desc').value;
+        const v = parseFloat(document.getElementById('valor').value);
+        if (!d || isNaN(v)) return;
+        db.push({ data: new Date().toLocaleDateString('pt-BR'), desc: d, valor: v, tipo: document.getElementById('tipo').value });
         localStorage.setItem('financas_weverson', JSON.stringify(db));
         renderizar();
     }
@@ -284,25 +319,13 @@
             t.tipo === 'receita' ? r += t.valor : d += t.valor;
             feed.innerHTML += `<div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border)">
                 <div>${t.desc}<br><small style="color: var(--text-gray)">${t.data}</small></div>
-                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+                <div style="color: ${t.tipo === 'receita' ? 'var(--success-green)' : 'var(--danger-red)'}">R$ ${t.valor.toFixed(2)}</div>
             </div>`;
         });
         document.getElementById('saldo-total').innerText = `R$ ${(r - d).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('resumo-receita').innerText = `R$ ${r.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('resumo-despesa').innerText = `R$ ${d.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
     }
 
     function logout() { sessionStorage.removeItem('session_active'); window.location.reload(); }
-    
-    function exportarCSV() {
-        let csv = "Data;Descricao;Tipo;Valor\n";
-        db.forEach(t => csv += `${t.data};${t.desc};${t.tipo};${t.valor.toFixed(2).replace('.', ',')}\n`);
-        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "financas_weverson.csv";
-        a.click();
-    }
 </script>
 </body>
 </html>
