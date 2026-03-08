@@ -371,58 +371,14 @@
                 "Kawasaki": ["Ninja 400", "Z400", "Versys 650"],
                 "BMW": ["G 310 GS", "F 850 GS", "R 1250 GS"]
             },
-            // CLIENTES COM LISTA DE VEÍCULOS
-            clientes: [
-                { 
-                    id: 1, 
-                    nome: "Weverson", 
-                    fone: "8599999999", 
-                    cpf: "000.111.222-33", 
-                    email: "weverson@email.com",
-                    veiculos: [
-                        { placa: "ABC1234", montadora: "Yamaha", modelo: "Fazer 250", cc: 250, ano: 2023 }
-                    ]
-                },
-                { 
-                    id: 2, 
-                    nome: "Tiago Melo", 
-                    fone: "8588888888",
-                    cpf: "",
-                    email: "",
-                    veiculos: [
-                        { placa: "G3K2026", montadora: "Suzuki", modelo: "V-Strom 650", cc: 650, ano: 2021 }
-                    ]
-                },
-                { 
-                    id: 3, 
-                    nome: "Lucas Ribeiro", 
-                    fone: "8577777777",
-                    cpf: "",
-                    email: "",
-                    veiculos: [
-                        { placa: "HTT4455", montadora: "Honda", modelo: "XRE 300", cc: 300, ano: 2020 }
-                    ]
-                }
-            ],
+            // BANCO DE DADOS ZERADO
+            clientes: [],
             equipe: [
-                { id: 1, nome: 'Zeca Mecânico', especialidade: 'Motor/Injeção', comissaoAtiva: true, taxa: 10, produzidos: 4500 },
-                { id: 2, nome: 'Beto Suspensão', especialidade: 'Chassi/Freios', comissaoAtiva: true, taxa: 8, produzidos: 3200 },
-                { id: 3, nome: 'Nando Ajudante', especialidade: 'Geral', comissaoAtiva: false, taxa: 0, produzidos: 1500 }
+                { id: 1, nome: 'Mecânico Padrão', especialidade: 'Geral', comissaoAtiva: false, taxa: 0, produzidos: 0 }
             ],
-            estoque: [
-                { id: 1, item: 'Óleo Motul 3000', custo: 28.00, venda: 45.00, qtd: 15 },
-                { id: 2, item: 'Pastilha Freio Cobreq', custo: 18.00, venda: 40.00, qtd: 8 },
-                { id: 3, item: 'Kit Relação DID', custo: 180.00, venda: 320.00, qtd: 3 }
-            ],
-            osAtivas: [
-                { id: 101, cliente: 'Lucas Ribeiro', placa: 'HTT4455', modelo: 'XRE 300', servico: 'Revisão Geral', status: 'Em execução', pecas: 120, maoDeObra: 530, mecanicoId: 1, itens: [] },
-                { id: 102, cliente: 'Marcos Silva', placa: 'OFF1010', modelo: 'Bros 160', servico: 'Troca de Pneu', status: 'Pronta', pecas: 280, maoDeObra: 100, mecanicoId: 2, itens: [] },
-                { id: 103, cliente: 'Ana Costa', placa: 'G3M1234', modelo: 'Ninja 400', servico: 'Troca de Óleo', status: 'Aguardando', pecas: 80, maoDeObra: 40, mecanicoId: 3, itens: [] }
-            ],
-            revisoes: [
-                { id: 1, cliente: 'Weverson', placa: 'ABC1234', modelo: 'Fazer 250', status: 'Atrasada', faturamento: 450, whatsapp: '5585999999999' },
-                { id: 2, cliente: 'Tiago Melo', placa: 'G3K2026', modelo: 'V-Strom 650', status: 'Hoje', faturamento: 1200, whatsapp: '5585888888888' }
-            ]
+            estoque: [],
+            osAtivas: [],
+            revisoes: []
         };
 
         // --- AUTENTICAÇÃO ---
@@ -575,7 +531,8 @@
                         }, 50);
                     }
                 } else {
-                    // Sem alert(), usamos visual feedback
+                    // Adicionado alerta claro para avisar que a busca foi feita mas o veículo não existe
+                    alert("Veículo não encontrado no sistema. Pode preencher os dados manualmente para cadastrar.");
                     inputPlaca.classList.remove('border-emerald-500');
                     inputPlaca.classList.add('border-zinc-800');
                     inputPlaca.classList.replace('focus:border-emerald-500', 'focus:border-red-500');
