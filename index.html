@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV Oficina G3 - v01</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #18181b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 10px;
+        }
+
+        @keyframes scan {
+            0% { top: 10%; }
+            100% { top: 90%; }
+        }
+        .animate-scan {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+            animation: scan 3s linear infinite alternate;
+        }
+
+        .tab-active {
+            background-color: #ef4444 !important;
+            color: white !important;
+            box-shadow: 0 10px 15px -3px rgba(153, 27, 27, 0.4);
+            transform: translateX(4px);
+        }
+
+        .mobile-tab-active {
+            color: #ef4444 !important;
+        }
+    </style>
+</head>
+<body class="selection:bg-red-600/30">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-zinc-900 border-r border-zinc-800 h-screen sticky top-0">
+            <div class="p-6 border-b border-zinc-800 flex items-center gap-3">
+                <div class="bg-red-600 p-1.5 rounded-lg shadow-lg shadow-red-900/20">
+                    <i data-lucide="wrench" class="text-white w-5 h-5"></i>
+                </div>
+                <h1 id="brand-name-side" class="text-lg font-bold italic uppercase tracking-tighter text-white">Oficina G3</h1>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Painel de Controle</span>
+                </button>
+                <button onclick="switchTab('os')" id="nav-os" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Ordens de Serviço</span>
+                </button>
+                <button onclick="switchTab('equipe')" id="nav-equipe" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                    <i data-lucide="hard-hat" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Equipe & Comissões</span>
+                </button>
+                <button onclick="switchTab('estoque')" id="nav-estoque" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Estoque & Lucro</span>
+                </button>
+                <button onclick="switchTab('print')" id="nav-print" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span class="text-sm font-bold">Imprimir Checklist</span>
+                </button>
+                <div class="pt-4 mt-4 border-t border-zinc-800">
+                    <button onclick="switchTab('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        <span class="text-sm font-bold">Configurações</span>
+                    </button>
+                </div>
+            </nav>
+            <div class="p-4 bg-zinc-950/30 m-4 rounded-xl border border-zinc-800/50 text-[10px] text-zinc-600 uppercase font-black tracking-widest text-center">
+                G3 Engine v3.0
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- Header (Mobile) -->
+            <header class="md:hidden bg-zinc-900 text-white p-5 flex justify-between items-center border-b border-zinc-800 sticky top-0 z-30">
+                <div class="flex items-center gap-3">
+                    <div class="bg-red-600 p-1.5 rounded-lg">
+                        <i data-lucide="wrench" class="text-white w-4 h-4"></i>
+                    </div>
+                    <h1 id="brand-name-mobile" class="text-md font-black italic uppercase tracking-tighter">Oficina G3</h1>
+                </div>
+                <button onclick="switchTab('config')" class="p-2.5 bg-zinc-800 rounded-2xl text-zinc-400">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+            </header>
+
+            <main id="main-content" class="flex-1 custom-scrollbar overflow-y-auto">
+                <!-- Content injected here by JS -->
+            </main>
+
+            <!-- Bottom Nav (Mobile) -->
+            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-lg border-t border-zinc-800 flex justify-around p-4 pb-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+                <button onclick="switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-dashboard">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="text-[8px] font-black uppercase tracking-tighter">Painel</span>
+                </button>
+                <button onclick="switchTab('equipe')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-equipe">
+                    <i data-lucide="hard-hat" class="w-5 h-5"></i>
+                    <span class="text-[8px] font-black uppercase tracking-tighter">Equipe</span>
+                </button>
+                <div class="relative">
+                    <button onclick="toggleScanModal(true)" class="bg-red-600 text-white p-4 rounded-[1.5rem] -mt-10 border-8 border-zinc-950 shadow-2xl active:scale-90 transition-transform">
+                        <i data-lucide="camera" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <button onclick="switchTab('estoque')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-estoque">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    <span class="text-[8px] font-black uppercase tracking-tighter">Peças</span>
+                </button>
+                <button onclick="switchTab('config')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-config">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal: Scan -->
+    <div id="modal-scan" class="hidden fixed inset-0 z-50 bg-black/98 flex flex-col p-4 md:p-12 animate-in fade-in zoom-in duration-300">
+        <div class="flex justify-between items-center mb-10 max-w-5xl mx-auto w-full">
+            <div class="flex items-center gap-4">
+                <div class="bg-red-600 p-2 rounded-xl"><i data-lucide="camera" class="text-white w-6 h-6"></i></div>
+                <div>
+                    <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Digitalizar O.S. Papel</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider text-red-500">Mecanismo G3 Vision</p>
+                </div>
+            </div>
+            <button onclick="toggleScanModal(false)" class="text-zinc-400 bg-zinc-900 hover:bg-zinc-800 p-3 rounded-2xl transition-colors">✕</button>
+        </div>
+
+        <div class="flex-1 flex flex-col lg:flex-row gap-12 items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="w-full max-w-md aspect-[3/4.5] border-2 border-zinc-800 rounded-[3rem] relative overflow-hidden bg-zinc-950 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
+                <div class="animate-scan"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-12">
+                    <div class="w-full h-full border border-zinc-800/50 rounded-2xl flex flex-col items-center justify-center">
+                        <i data-lucide="camera" class="text-zinc-800 w-12 h-12 mb-4"></i>
+                        <p class="text-zinc-600 text-[10px] uppercase font-black tracking-widest px-6 leading-relaxed">Centralize o cabeçalho e os checklists marcados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-xs w-full space-y-6">
+                <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800">
+                    <p class="text-xs text-white font-black uppercase tracking-widest mb-4 italic">Como Funciona:</p>
+                    <div class="space-y-4 text-[10px] text-zinc-400 font-bold uppercase leading-relaxed tracking-tight">
+                        <div class="flex gap-3"><span class="text-red-500 font-black italic">01.</span><p>O sistema reconhece a placa escrita.</p></div>
+                        <div class="flex gap-3"><span class="text-red-500 font-black italic">02.</span><p>Campos com "X" viram itens de O.S.</p></div>
+                        <div class="flex gap-3"><span class="text-red-500 font-black italic">03.</span><p>Estoque baixa automaticamente.</p></div>
+                    </div>
+                </div>
+                <button onclick="toggleScanModal(false)" class="w-full bg-red-600 text-white font-black py-5 rounded-3xl active:scale-95 transition-all shadow-2xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
+                    Capturar O.S.
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Checkout PDV -->
+    <div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+            <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Finalizar Venda (PDV)</h3>
+                    <p id="checkout-os-id" class="text-zinc-500 text-xs font-bold uppercase tracking-wider"></p>
+                </div>
+                <button onclick="toggleCheckoutModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
+            </div>
+            
+            <div id="checkout-content" class="p-8 space-y-6">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ESTADO GLOBAL ---
+        let state = {
+            activeTab: 'dashboard',
+            nomeOficina: 'Oficina G3',
+            corPrimaria: '#ef4444',
+            equipe: [
+                { id: 1, nome: 'Zeca Mecânico', especialidade: 'Motor/Injeção', comissaoAtiva: true, taxa: 10, produzidos: 4500 },
+                { id: 2, nome: 'Beto Suspensão', especialidade: 'Chassi/Freios', comissaoAtiva: true, taxa: 8, produzidos: 3200 },
+                { id: 3, nome: 'Nando Ajudante', especialidade: 'Geral', comissaoAtiva: false, taxa: 0, produzidos: 1500 }
+            ],
+            estoque: [
+                { id: 1, item: 'Óleo Motul 3000', custo: 28.00, venda: 45.00, qtd: 15 },
+                { id: 2, item: 'Pastilha Freio Cobreq', custo: 18.00, venda: 40.00, qtd: 8 },
+                { id: 3, item: 'Kit Relação DID', custo: 180.00, venda: 320.00, qtd: 3 }
+            ],
+            osAtivas: [
+                { id: 101, cliente: 'Lucas Ribeiro', placa: 'HTT4455', modelo: 'XRE 300', servico: 'Revisão Geral', status: 'Em execução', pecas: 120, maoDeObra: 530, mecanicoId: 1 },
+                { id: 102, cliente: 'Marcos Silva', placa: 'OFF1010', modelo: 'Bros 160', servico: 'Troca de Pneu', status: 'Pronta', pecas: 280, maoDeObra: 100, mecanicoId: 2 },
+                { id: 103, cliente: 'Ana Costa', placa: 'G3M1234', modelo: 'Ninja 400', servico: 'Troca de Óleo', status: 'Aguardando', pecas: 80, maoDeObra: 40, mecanicoId: 3 }
+            ],
+            revisoes: [
+                { id: 1, cliente: 'Weverson', placa: 'ABC1234', modelo: 'Fazer 250', status: 'Atrasada', faturamento: 450, whatsapp: '5585999999999' },
+                { id: 2, cliente: 'Tiago Melo', placa: 'G3K2026', modelo: 'V-Strom 650', status: 'Hoje', faturamento: 1200, whatsapp: '5585888888888' }
+            ]
+        };
+
+        // --- NAVEGAÇÃO ---
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            render();
+        }
+
+        function toggleScanModal(show) {
+            const modal = document.getElementById('modal-scan');
+            modal.classList.toggle('hidden', !show);
+        }
+
+        function toggleCheckoutModal(show, osId = null) {
+            const modal = document.getElementById('modal-checkout');
+            if (show) {
+                const os = state.osAtivas.find(o => o.id === osId);
+                const mecanico = state.equipe.find(m => m.id === os.mecanicoId);
+                const comissaoVal = os.maoDeObra * (mecanico.taxa / 100);
+                
+                document.getElementById('checkout-os-id').innerText = `Fecho de O.S. #${os.id}`;
+                document.getElementById('checkout-content').innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-zinc-400 text-sm font-medium">
+                            <span>Peças e Insumos</span>
+                            <span class="font-mono text-white">R$ ${os.pecas.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between text-zinc-400 text-sm font-medium">
+                            <span>Mão de Obra (${mecanico.nome})</span>
+                            <span class="font-mono text-white">R$ ${os.maoDeObra.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-4 border-t border-zinc-800">
+                            <span class="text-zinc-500 font-black uppercase text-xs tracking-widest">Total a Receber</span>
+                            <span class="text-3xl font-black text-emerald-500 italic">R$ ${(os.pecas + os.maoDeObra).toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-2 text-center">
+                        <p class="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-2 italic">Repartição G3</p>
+                        <div class="flex justify-between text-[10px] font-bold">
+                            <span class="text-zinc-500 uppercase">COMISSÃO MECÂNICO (${mecanico.taxa}%):</span>
+                            <span class="text-orange-500">R$ ${comissaoVal.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-bold">
+                            <span class="text-zinc-500 uppercase">LUCRO LÍQUIDO OFICINA:</span>
+                            <span class="text-blue-400">R$ ${(os.pecas + os.maoDeObra - comissaoVal).toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-emerald-500 transition-all">
+                            <i data-lucide="banknote" class="text-zinc-500 mb-2"></i>
+                            <span class="text-[8px] font-black uppercase">Dinheiro</span>
+                        </button>
+                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-blue-500 transition-all">
+                            <i data-lucide="credit-card" class="text-zinc-500 mb-2"></i>
+                            <span class="text-[8px] font-black uppercase">Cartão</span>
+                        </button>
+                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-purple-500 transition-all">
+                            <i data-lucide="qr-code" class="text-zinc-500 mb-2"></i>
+                            <span class="text-[8px] font-black uppercase">Pix</span>
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function finalizarOS(osId) {
+            state.osAtivas = state.osAtivas.filter(o => o.id !== osId);
+            toggleCheckoutModal(false);
+            render();
+        }
+
+        // --- RENDERIZADORES ---
+        function render() {
+            const content = document.getElementById('main-content');
+            
+            // Atualizar UI de Navegação
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('tab-active'));
+            document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('mobile-tab-active'));
+            
+            document.getElementById(`nav-${state.activeTab}`)?.classList.add('tab-active');
+            document.getElementById(`m-nav-${state.activeTab}`)?.classList.add('mobile-tab-active');
+
+            if (state.activeTab === 'dashboard') content.innerHTML = renderDashboard();
+            if (state.activeTab === 'equipe') content.innerHTML = renderEquipe();
+            if (state.activeTab === 'estoque') content.innerHTML = renderEstoque();
+            if (state.activeTab === 'print') content.innerHTML = renderPrint();
+            if (state.activeTab === 'config') content.innerHTML = renderConfig();
+            if (state.activeTab === 'os') content.innerHTML = `<div class="p-12 text-center text-zinc-600 uppercase font-black opacity-20 italic">Lista Geral de O.S. em construção...</div>`;
+
+            lucide.createIcons();
+        }
+
+        function renderDashboard() {
+            return `
+                <div class="p-4 md:p-8 pb-24 space-y-8 max-w-7xl mx-auto w-full animate-in fade-in duration-500">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                                <span class="text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">+12%</span>
+                            </div>
+                            <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Faturamento</p>
+                            <p class="text-2xl font-black text-white">R$ 1.240</p>
+                        </div>
+                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2 rounded-xl bg-blue-500/10 text-blue-500"><i data-lucide="clipboard-list" class="w-5 h-5"></i></div>
+                            </div>
+                            <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">O.S. Ativas</p>
+                            <p class="text-2xl font-black text-white">${state.osAtivas.length}</p>
+                        </div>
+                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500"><i data-lucide="percent" class="w-5 h-5"></i></div>
+                            </div>
+                            <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Comissões</p>
+                            <p class="text-2xl font-black text-white">R$ 480</p>
+                        </div>
+                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-2 rounded-xl bg-orange-500/10 text-orange-500"><i data-lucide="hard-hat" class="w-5 h-5"></i></div>
+                            </div>
+                            <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Equipe ON</p>
+                            <p class="text-2xl font-black text-white">${state.equipe.length}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <section class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-xl">
+                                <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-blue-500/20 p-2 rounded-lg text-blue-500"><i data-lucide="user-check" class="w-4 h-4"></i></div>
+                                        <div>
+                                            <h2 class="font-black uppercase text-sm tracking-tighter text-white">Estado da Oficina</h2>
+                                            <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Motos em Atendimento</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divide-y divide-zinc-800">
+                                    ${state.osAtivas.map(os => {
+                                        const mecanico = state.equipe.find(m => m.id === os.mecanicoId);
+                                        return `
+                                            <div class="p-5 flex items-center justify-between hover:bg-zinc-800/40 transition-colors group">
+                                                <div class="flex items-center gap-4">
+                                                    <div class="w-2 h-8 rounded-full ${os.status === 'Pronta' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-orange-500 animate-pulse'}"></div>
+                                                    <div>
+                                                        <p class="font-black text-zinc-100 group-hover:text-red-500 transition-colors">${os.modelo} <span class="text-zinc-500 font-mono text-xs">[${os.placa}]</span></p>
+                                                        <p class="text-xs text-zinc-500 font-medium">${os.servico} • <span class="text-blue-400 font-bold uppercase text-[10px]">Mecânico: ${mecanico?.nome}</span></p>
+                                                    </div>
+                                                </div>
+                                                ${os.status === 'Pronta' ? `
+                                                    <button onclick="toggleCheckoutModal(true, ${os.id})" class="bg-emerald-600 text-white p-2.5 rounded-xl hover:bg-emerald-500 active:scale-90 shadow-lg">
+                                                        <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+                                                    </button>
+                                                ` : `
+                                                    <div class="text-right">
+                                                        <p class="text-xs font-black text-white uppercase tracking-widest">${os.status}</p>
+                                                        <p class="text-[10px] text-zinc-500 font-mono">#${os.id}</p>
+                                                    </div>
+                                                `}
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="space-y-6">
+                            <section class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl">
+                                <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 italic">Revisões Alvo</h3>
+                                <div class="space-y-4">
+                                    ${state.revisoes.map(rev => `
+                                        <div class="flex justify-between items-center bg-zinc-950/50 p-3 rounded-2xl border border-zinc-800">
+                                            <div>
+                                                <p class="text-xs font-bold">${rev.modelo}</p>
+                                                <p class="text-[9px] text-zinc-500 uppercase font-black">${rev.status}</p>
+                                            </div>
+                                            <button class="text-green-500 p-2 bg-green-500/10 rounded-lg"><i data-lucide="message-circle" class="w-4 h-4"></i></button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </section>
+                            <div class="bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 rounded-3xl border border-zinc-700">
+                                <h3 class="text-white font-black italic uppercase text-xs mb-2">Sacada G3</h3>
+                                <p class="text-zinc-500 text-[10px] leading-relaxed">Ofereça revisão geral a cada 6 meses. O faturamento aumenta 30%.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEquipe() {
+            return `
+                <div class="p-4 md:p-8 space-y-8 max-w-5xl mx-auto animate-in slide-in-from-bottom-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Equipe & Comissões</h2>
+                            <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Gestão de produtividade</p>
+                        </div>
+                        <button class="bg-red-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-xs font-black uppercase tracking-widest shadow-lg shadow-red-900/20">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Novo Mecânico
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${state.equipe.map(m => `
+                            <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 relative shadow-lg">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 border border-zinc-700 font-black">${m.nome.charAt(0)}</div>
+                                    <div><h3 class="font-black text-white">${m.nome}</h3><p class="text-[10px] text-zinc-500 uppercase font-bold">${m.especialidade}</p></div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between text-xs"><span class="text-zinc-500 font-bold uppercase">Taxa (%)</span><span class="text-white font-black">${m.taxa}% M.O.</span></div>
+                                    <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
+                                        <div><p class="text-[10px] text-zinc-600 font-black uppercase">Produção</p><p class="text-lg font-black text-white">R$ ${m.produzidos}</p></div>
+                                        <div class="text-right"><p class="text-[10px] text-zinc-600 font-black uppercase text-emerald-500">A Pagar</p><p class="text-lg font-black text-emerald-500">R$ ${(m.produzidos * (m.taxa/100)).toFixed(2)}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEstoque() {
+            return `
+                <div class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Stock & Markup</h2>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider text-emerald-500 italic">Maximize seu lucro por peça</p>
+                    </div>
+                    <div class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-zinc-950 text-zinc-600 uppercase text-[10px] font-black border-b border-zinc-800">
+                                <tr><th class="p-5">Peça</th><th class="p-5">Custo</th><th class="p-5">Venda</th><th class="p-5 text-center">Quantidade</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-800">
+                                ${state.estoque.map(item => `
+                                    <tr class="hover:bg-zinc-800/30">
+                                        <td class="p-5 font-bold text-zinc-200">${item.item}</td>
+                                        <td class="p-5 text-zinc-500 font-mono">R$ ${item.custo.toFixed(2)}</td>
+                                        <td class="p-5 font-black text-emerald-500 font-mono">R$ ${item.venda.toFixed(2)}</td>
+                                        <td class="p-5 text-center">
+                                            <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.qtd < 10 ? 'bg-red-500/10 text-red-500' : 'bg-zinc-800 text-zinc-400'}">${item.qtd} UN</span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPrint() {
+            return `
+                <div class="p-4 md:p-8 space-y-8 max-w-4xl mx-auto text-center">
+                    <div class="bg-zinc-900 p-12 rounded-[2.5rem] border border-zinc-800 shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
+                        <i data-lucide="printer" class="mx-auto text-zinc-700 w-12 h-12 mb-6"></i>
+                        <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Guia de Entrada G3</h2>
+                        <p class="text-zinc-500 text-sm mt-4 max-w-md mx-auto leading-relaxed">Imprima o checklist oficial. O mecânico marca com o "X" e você digitaliza com a câmera do celular.</p>
+                        <button class="mt-8 bg-white text-black font-black py-4 px-12 rounded-2xl hover:bg-zinc-200 uppercase text-sm tracking-widest shadow-xl active:scale-95 transition-all">Gerar Modelo PDF</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderConfig() {
+            return `
+                <div class="p-8 space-y-8 max-w-xl mx-auto">
+                    <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Definições</h2>
+                    <div class="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 space-y-6 shadow-xl">
+                        <div>
+                            <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Nome Comercial</label>
+                            <input type="text" value="${state.nomeOficina}" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none">
+                        </div>
+                        <button class="w-full bg-zinc-800 text-white font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Guardar Alterações</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            render();
+        };
+    </script>
+</body>
+</html>
