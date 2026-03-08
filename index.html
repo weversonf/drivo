@@ -412,6 +412,87 @@
         </div>
     </div>
 
+    <!-- Modal: Novo/Editar Peça (Estoque) -->
+    <div id="modal-estoque" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
+            <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-black text-xl uppercase italic tracking-tighter" id="estoque-modal-title">Nova Peça</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Gestão de Inventário</p>
+                </div>
+                <button onclick="window.toggleEstoqueModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
+            </div>
+            
+            <form onsubmit="window.saveEstoqueItem(event)" class="p-8 space-y-4">
+                <input type="hidden" id="est-id" value="">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Cód. / SKU (Opcional)</label>
+                        <input id="est-sku" type="text" placeholder="Ex: OL-10W30" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600 uppercase">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Categoria</label>
+                        <select id="est-categoria" required onchange="window.updateAutoSKU()" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
+                            <option value="Óleos e Lubrificantes">Óleos e Lubrificantes</option>
+                            <option value="Filtros">Filtros</option>
+                            <option value="Transmissão">Transmissão</option>
+                            <option value="Freios">Freios</option>
+                            <option value="Elétrica e Bateria">Elétrica e Bateria</option>
+                            <option value="Pneus e Câmaras">Pneus e Câmaras</option>
+                            <option value="Cabos">Cabos</option>
+                            <option value="Suspensão">Suspensão</option>
+                            <option value="Acessórios">Acessórios</option>
+                            <option value="Diversos" selected>Diversos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Descrição do Item</label>
+                    <input id="est-item" type="text" required placeholder="Ex: Pastilha de Freio Diant. Fazer 250" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Custo (R$)</label>
+                        <input id="est-custo" type="number" step="0.01" required placeholder="0.00" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Venda (R$)</label>
+                        <input id="est-venda" type="number" step="0.01" required placeholder="0.00" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-emerald-500 font-black outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Em Estoque</label>
+                        <input id="est-qtd" type="number" required placeholder="0" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
+                    Salvar Item
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão de Estoque -->
+    <div id="modal-delete-estoque" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-sm rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
+            <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="package-minus" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Peça?</h3>
+                <p class="text-zinc-500 text-xs font-bold" id="delete-estoque-text"></p>
+                <p class="text-red-500 text-[10px] font-bold mt-2 uppercase tracking-widest">Atenção: Isso não afetará O.S. antigas.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.closeDeleteEstoqueModal()" class="bg-zinc-800 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
+                <button onclick="window.confirmDeleteEstoqueItem()" class="bg-red-600 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -447,12 +528,18 @@
                 "Kawasaki": ["Ninja 400", "Z400", "Versys 650"],
                 "BMW": ["G 310 GS", "F 850 GS", "R 1250 GS"]
             },
-            // BANCO DE DADOS ZERADO
+            // BANCO DE DADOS INICIAL
             clientes: [],
             equipe: [
                 { id: 1, nome: 'Mecânico Padrão', especialidade: 'Geral', comissaoAtiva: false, taxa: 0, produzidos: 0 }
             ],
-            estoque: [],
+            estoque: [
+                { id: 101, sku: 'OL-10W30-M', item: 'Óleo Motul 10W30 1L', categoria: 'Óleos e Lubrificantes', custo: 35.00, venda: 55.00, qtd: 24 },
+                { id: 102, sku: 'FL-AR-FZ25', item: 'Filtro de Ar Fazer 250', categoria: 'Filtros', custo: 18.00, venda: 45.00, qtd: 8 },
+                { id: 103, sku: 'REL-DID-520', item: 'Kit Relação DID c/ Retentor', categoria: 'Transmissão', custo: 180.00, venda: 290.00, qtd: 3 },
+                { id: 104, sku: 'PAS-FR-DIA', item: 'Pastilha Freio Diant. Cobreq', categoria: 'Freios', custo: 22.00, venda: 45.00, qtd: 15 },
+                { id: 105, sku: 'VEL-NGK-IR', item: 'Vela Iridium NGK', categoria: 'Elétrica e Bateria', custo: 45.00, venda: 85.00, qtd: 10 },
+            ],
             osAtivas: [],
             revisoes: []
         };
@@ -949,6 +1036,115 @@
                 state.equipe = state.equipe.filter(m => m.id != mecanicoToDelete);
                 render();
                 closeDeleteMecanicoModal();
+            }
+        };
+
+        // --- LÓGICA DE ESTOQUE E SKU AUTOMÁTICO ---
+        window.updateAutoSKU = () => {
+            const id = document.getElementById('est-id').value;
+            const skuInput = document.getElementById('est-sku');
+            const currentSKU = skuInput.value;
+
+            // Só atualiza automático se for um novo cadastro E se o usuário não tiver digitado um código manual diferente do padrão (XX-1234)
+            const isAutoPattern = currentSKU === '' || /^[A-Z]{2}-\d{4}$/.test(currentSKU);
+
+            if (!id && isAutoPattern) {
+                const cat = document.getElementById('est-categoria').value;
+                const prefixes = {
+                    'Óleos e Lubrificantes': 'OL', 'Filtros': 'FL', 'Transmissão': 'TR',
+                    'Freios': 'FR', 'Elétrica e Bateria': 'EL', 'Pneus e Câmaras': 'PN',
+                    'Cabos': 'CB', 'Suspensão': 'SU', 'Acessórios': 'AC', 'Diversos': 'DV'
+                };
+                const prefix = prefixes[cat] || 'DV';
+                const randomNum = Math.floor(1000 + Math.random() * 9000);
+                skuInput.value = `${prefix}-${randomNum}`;
+            }
+        };
+
+        window.toggleEstoqueModal = (show, itemId = null) => {
+            const modal = document.getElementById('modal-estoque');
+            if (show) {
+                const isEdit = itemId !== null;
+                document.getElementById('estoque-modal-title').innerText = isEdit ? 'Editar Peça' : 'Nova Peça';
+                
+                if (isEdit) {
+                    const item = state.estoque.find(x => x.id == itemId);
+                    document.getElementById('est-id').value = item.id;
+                    document.getElementById('est-sku').value = item.sku || '';
+                    document.getElementById('est-categoria').value = item.categoria || 'Diversos';
+                    document.getElementById('est-item').value = item.item;
+                    document.getElementById('est-custo').value = item.custo;
+                    document.getElementById('est-venda').value = item.venda;
+                    document.getElementById('est-qtd').value = item.qtd;
+                } else {
+                    document.getElementById('est-id').value = '';
+                    document.getElementById('est-sku').value = '';
+                    document.getElementById('est-categoria').value = 'Diversos';
+                    document.getElementById('est-item').value = '';
+                    document.getElementById('est-custo').value = '';
+                    document.getElementById('est-venda').value = '';
+                    document.getElementById('est-qtd').value = '';
+                    window.updateAutoSKU(); // Gera o SKU inicial padrão
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        };
+
+        window.saveEstoqueItem = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('est-id').value;
+            const sku = document.getElementById('est-sku').value.toUpperCase();
+            const categoria = document.getElementById('est-categoria').value;
+            const itemDesc = document.getElementById('est-item').value;
+            const custo = parseFloat(document.getElementById('est-custo').value) || 0;
+            const venda = parseFloat(document.getElementById('est-venda').value) || 0;
+            const qtd = parseInt(document.getElementById('est-qtd').value) || 0;
+
+            if (id) {
+                const item = state.estoque.find(x => x.id == id);
+                if (item) {
+                    item.sku = sku;
+                    item.categoria = categoria;
+                    item.item = itemDesc;
+                    item.custo = custo;
+                    item.venda = venda;
+                    item.qtd = qtd;
+                }
+            } else {
+                state.estoque.unshift({
+                    id: Date.now(), 
+                    sku,
+                    categoria,
+                    item: itemDesc, 
+                    custo, 
+                    venda, 
+                    qtd
+                });
+            }
+            window.toggleEstoqueModal(false);
+            render();
+        };
+
+        let estoqueToDelete = null;
+
+        window.promptDeleteEstoqueItem = (id, nome) => {
+            estoqueToDelete = id;
+            document.getElementById('delete-estoque-text').innerText = `Peça: ${nome}`;
+            document.getElementById('modal-delete-estoque').classList.remove('hidden');
+        };
+
+        window.closeDeleteEstoqueModal = () => {
+            estoqueToDelete = null;
+            document.getElementById('modal-delete-estoque').classList.add('hidden');
+        };
+
+        window.confirmDeleteEstoqueItem = () => {
+            if (estoqueToDelete) {
+                state.estoque = state.estoque.filter(item => item.id != estoqueToDelete);
+                render();
+                closeDeleteEstoqueModal();
             }
         };
 
@@ -1487,25 +1683,77 @@
 
         function renderEstoque() {
             return `
-                <div class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto">
-                    <div>
-                        <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Stock & Markup</h2>
+                <div class="p-4 md:p-8 space-y-6 animate-in fade-in duration-500">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Estoque & Lucro</h2>
+                            <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">Gestão de Peças e Margem</p>
+                        </div>
+                        <button onclick="window.toggleEstoqueModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-[10px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
+                            <i data-lucide="package-plus" class="w-4 h-4"></i> Nova Peça
+                        </button>
                     </div>
-                    <div class="bg-zinc-900 rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-zinc-950 text-zinc-600 uppercase text-[10px] font-black border-b border-zinc-800">
-                                <tr><th class="p-5">Peça</th><th class="p-5">Venda</th><th class="p-5 text-center">Quantidade</th></tr>
+
+                    <div class="bg-zinc-900 rounded-[10px] border border-zinc-800 overflow-x-auto shadow-2xl">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-zinc-950 text-zinc-500 uppercase text-[10px] font-black border-b border-zinc-800 tracking-widest">
+                                <tr>
+                                    <th class="p-5">Cód / SKU</th>
+                                    <th class="p-5">Categoria</th>
+                                    <th class="p-5">Peça / Descrição</th>
+                                    <th class="p-5 text-right">Custo</th>
+                                    <th class="p-5 text-right">Venda</th>
+                                    <th class="p-5 text-right">Lucro</th>
+                                    <th class="p-5 text-center">Em Estoque</th>
+                                    <th class="p-5 text-center">Ações</th>
+                                </tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-800">
-                                ${state.estoque.map(item => `
-                                    <tr class="hover:bg-zinc-800/30">
+                                ${state.estoque.map(item => {
+                                    const lucroRS = item.venda - item.custo;
+                                    const margemPct = item.custo > 0 ? ((lucroRS / item.custo) * 100).toFixed(0) : 100;
+                                    const estoqueBaixo = item.qtd <= 3;
+                                    
+                                    return `
+                                    <tr class="hover:bg-zinc-800/30 transition-colors">
+                                        <td class="p-5 font-mono text-zinc-500 text-xs">${item.sku || '-'}</td>
+                                        <td class="p-5">
+                                            <span class="bg-zinc-800 text-zinc-400 px-2 py-1 rounded-[5px] text-[9px] uppercase font-bold tracking-wider">${item.categoria}</span>
+                                        </td>
                                         <td class="p-5 font-bold text-zinc-200">${item.item}</td>
-                                        <td class="p-5 font-black text-emerald-500 font-mono">R$ ${item.venda.toFixed(2)}</td>
+                                        <td class="p-5 text-right text-zinc-500 font-mono">R$ ${item.custo.toFixed(2)}</td>
+                                        <td class="p-5 text-right font-black text-white font-mono">R$ ${item.venda.toFixed(2)}</td>
+                                        <td class="p-5 text-right">
+                                            <div class="flex flex-col items-end">
+                                                <span class="text-emerald-500 font-black italic text-xs">R$ ${lucroRS.toFixed(2)}</span>
+                                                <span class="text-[9px] text-zinc-600 font-bold">${margemPct}% Margem</span>
+                                            </div>
+                                        </td>
                                         <td class="p-5 text-center">
-                                            <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.qtd < 10 ? 'bg-red-500/10 text-red-500' : 'bg-zinc-800 text-zinc-400'}">${item.qtd} UN</span>
+                                            <span class="px-3 py-1.5 rounded-[10px] text-[10px] font-black tracking-widest ${estoqueBaixo ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-zinc-950 text-zinc-400 border border-zinc-800'}">
+                                                ${item.qtd} UN
+                                            </span>
+                                        </td>
+                                        <td class="p-5">
+                                            <div class="flex justify-center gap-2">
+                                                <button onclick="window.toggleEstoqueModal(true, ${item.id})" class="p-2 bg-zinc-950 text-zinc-400 hover:text-white rounded-[10px] border border-zinc-800 hover:bg-zinc-800 transition-colors">
+                                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                                <button onclick="window.promptDeleteEstoqueItem(${item.id}, '${item.item}')" class="p-2 bg-zinc-950 text-zinc-400 hover:text-red-500 rounded-[10px] border border-zinc-800 hover:bg-zinc-800 transition-colors">
+                                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
-                                `).join('')}
+                                    `;
+                                }).join('')}
+                                ${state.estoque.length === 0 ? `
+                                    <tr>
+                                        <td colspan="8" class="p-12 text-center text-zinc-600 text-[10px] font-black uppercase tracking-widest italic">
+                                            Nenhuma peça cadastrada no estoque.
+                                        </td>
+                                    </tr>
+                                ` : ''}
                             </tbody>
                         </table>
                     </div>
