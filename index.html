@@ -58,6 +58,13 @@
         .logo-img {
             object-fit: contain;
         }
+
+        /* Nova classe para o autocomplete de clientes */
+        .suggestion-box {
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+        }
     </style>
 </head>
 <body class="selection:bg-red-600/30">
@@ -124,6 +131,60 @@
         </div>
     </div>
 
+    <!-- Modal: Nova OS Manual -->
+    <div id="modal-nova-os" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+            <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Nova O.S. Manual</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Abertura de Chamado</p>
+                </div>
+                <button onclick="toggleNewOSModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
+            </div>
+            
+            <form onsubmit="handleCreateOS(event)" class="p-8 space-y-4">
+                <div>
+                    <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Placa do Veículo</label>
+                    <input id="os-placa" type="text" required placeholder="ABC1234" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 uppercase">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Montadora</label>
+                        <select id="os-montadora" required onchange="updateModelosDropdown(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Modelo</label>
+                        <select id="os-modelo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
+                            <option value="">Selecione a montadora...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Cliente</label>
+                    <input id="os-cliente-input" type="text" required oninput="searchClients(this.value)" placeholder="Busque ou digite novo..." autocomplete="off" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                    <div id="os-cliente-suggestions" class="hidden absolute left-0 right-0 mt-1 bg-zinc-900 border border-zinc-800 rounded-xl suggestion-box shadow-2xl">
+                        <!-- Suggestions go here -->
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Mecânico Responsável</label>
+                    <select id="os-mecanico" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-3xl uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all">
+                    Abrir O.S. (Ir para Orçamento)
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -150,6 +211,21 @@
             corPrimaria: '#ef4444',
             logoUrl: 'https://raw.githubusercontent.com/weversonf/PDV-G3/refs/heads/main/logo_pdv_oficina_g3.png',
             user: null,
+            // NOVOS DADOS PARA O.S.
+            osViewMode: 'list', // 'list' ou 'edit'
+            currentEditingOS: null,
+            montadoras: {
+                "Yamaha": ["Fazer 250", "Lander 250", "MT-03", "Factor 150", "NMax 160", "Crosser 150"],
+                "Honda": ["CG 160 Titan", "CB 300F Twister", "XRE 300", "Biz 125", "PCX 150", "CB 500X"],
+                "Suzuki": ["Yes 125", "V-Strom 650", "Burgman", "GSX-S750"],
+                "Kawasaki": ["Ninja 400", "Z400", "Versys 650"],
+                "BMW": ["G 310 GS", "F 850 GS", "R 1250 GS"]
+            },
+            clientes: [
+                { id: 1, nome: "Weverson", fone: "8599999999" },
+                { id: 2, nome: "Tiago Melo", fone: "8588888888" },
+                { id: 3, nome: "Lucas Ribeiro", fone: "8577777777" }
+            ],
             equipe: [
                 { id: 1, nome: 'Zeca Mecânico', especialidade: 'Motor/Injeção', comissaoAtiva: true, taxa: 10, produzidos: 4500 },
                 { id: 2, nome: 'Beto Suspensão', especialidade: 'Chassi/Freios', comissaoAtiva: true, taxa: 8, produzidos: 3200 },
@@ -160,10 +236,11 @@
                 { id: 2, item: 'Pastilha Freio Cobreq', custo: 18.00, venda: 40.00, qtd: 8 },
                 { id: 3, item: 'Kit Relação DID', custo: 180.00, venda: 320.00, qtd: 3 }
             ],
+            // Adicionado array "itens: []" para suportar a tela de orçamento
             osAtivas: [
-                { id: 101, cliente: 'Lucas Ribeiro', placa: 'HTT4455', modelo: 'XRE 300', servico: 'Revisão Geral', status: 'Em execução', pecas: 120, maoDeObra: 530, mecanicoId: 1 },
-                { id: 102, cliente: 'Marcos Silva', placa: 'OFF1010', modelo: 'Bros 160', servico: 'Troca de Pneu', status: 'Pronta', pecas: 280, maoDeObra: 100, mecanicoId: 2 },
-                { id: 103, cliente: 'Ana Costa', placa: 'G3M1234', modelo: 'Ninja 400', servico: 'Troca de Óleo', status: 'Aguardando', pecas: 80, maoDeObra: 40, mecanicoId: 3 }
+                { id: 101, cliente: 'Lucas Ribeiro', placa: 'HTT4455', modelo: 'XRE 300', servico: 'Revisão Geral', status: 'Em execução', pecas: 120, maoDeObra: 530, mecanicoId: 1, itens: [] },
+                { id: 102, cliente: 'Marcos Silva', placa: 'OFF1010', modelo: 'Bros 160', servico: 'Troca de Pneu', status: 'Pronta', pecas: 280, maoDeObra: 100, mecanicoId: 2, itens: [] },
+                { id: 103, cliente: 'Ana Costa', placa: 'G3M1234', modelo: 'Ninja 400', servico: 'Troca de Óleo', status: 'Aguardando', pecas: 80, maoDeObra: 40, mecanicoId: 3, itens: [] }
             ],
             revisoes: [
                 { id: 1, cliente: 'Weverson', placa: 'ABC1234', modelo: 'Fazer 250', status: 'Atrasada', faturamento: 450, whatsapp: '5585999999999' },
@@ -203,9 +280,120 @@
             await signOut(auth);
         };
 
+        // --- LÓGICA DA NOVA O.S. (DROPDOWNS E AUTOCOMPLETE) ---
+        window.updateModelosDropdown = (montadora) => {
+            const select = document.getElementById('os-modelo');
+            if (!montadora) {
+                select.innerHTML = '<option value="">Selecione a montadora...</option>';
+                return;
+            }
+            const modelos = state.montadoras[montadora] || [];
+            select.innerHTML = modelos.map(m => `<option value="${m}">${m}</option>`).join('');
+        };
+
+        window.searchClients = (query) => {
+            const suggestions = document.getElementById('os-cliente-suggestions');
+            if (!query) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+            const filtered = state.clientes.filter(c => c.nome.toLowerCase().includes(query.toLowerCase()));
+            
+            let html = filtered.map(c => `
+                <div onclick="window.selectClient('${c.nome}')" class="p-3 hover:bg-zinc-800 cursor-pointer text-sm font-bold border-b border-zinc-800 last:border-0 text-white">
+                    ${c.nome}
+                </div>
+            `).join('');
+
+            if (filtered.length === 0) {
+                html = `
+                    <div onclick="window.addNewClient('${query}')" class="p-3 hover:bg-red-600/20 cursor-pointer text-sm font-bold text-red-500 italic">
+                        + Cadastrar novo: "${query}"
+                    </div>
+                `;
+            }
+
+            suggestions.innerHTML = html;
+            suggestions.classList.remove('hidden');
+        };
+
+        window.selectClient = (nome) => {
+            document.getElementById('os-cliente-input').value = nome;
+            document.getElementById('os-cliente-suggestions').classList.add('hidden');
+        };
+
+        window.addNewClient = (nome) => {
+            state.clientes.push({ id: Date.now(), nome: nome, fone: "" });
+            window.selectClient(nome);
+        };
+
+        window.toggleNewOSModal = (show) => {
+            const modal = document.getElementById('modal-nova-os');
+            if (show) {
+                // Carrega montadoras
+                const montadoraSelect = document.getElementById('os-montadora');
+                montadoraSelect.innerHTML = '<option value="">Selecione...</option>' + 
+                    Object.keys(state.montadoras).map(m => `<option value="${m}">${m}</option>`).join('');
+                
+                // Carrega mecânicos
+                const mecSelect = document.getElementById('os-mecanico');
+                mecSelect.innerHTML = state.equipe.map(m => `<option value="${m.id}">${m.nome}</option>`).join('');
+                
+                // Reseta campos
+                document.getElementById('os-placa').value = '';
+                document.getElementById('os-cliente-input').value = '';
+                document.getElementById('os-modelo').innerHTML = '<option value="">Selecione a montadora...</option>';
+                
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        };
+
+        window.handleCreateOS = (e) => {
+            e.preventDefault();
+            const newOS = {
+                id: Math.floor(1000 + Math.random() * 9000), // ID aleatório p/ exemplo
+                placa: document.getElementById('os-placa').value.toUpperCase(),
+                modelo: document.getElementById('os-modelo').value,
+                cliente: document.getElementById('os-cliente-input').value,
+                mecanicoId: parseInt(document.getElementById('os-mecanico').value),
+                servico: "Orçamento em aberto",
+                status: 'Aguardando',
+                pecas: 0,
+                maoDeObra: 0,
+                itens: []
+            };
+            state.osAtivas.unshift(newOS);
+            window.toggleNewOSModal(false);
+            window.openOSEditor(newOS.id);
+        };
+
+        window.openOSEditor = (osId) => {
+            state.currentEditingOS = state.osAtivas.find(o => o.id === osId);
+            state.osViewMode = 'edit';
+            render();
+        };
+
+        window.addItemToOS = () => {
+            const desc = prompt("Descrição do serviço ou peça:");
+            if (!desc) return;
+            const valor = parseFloat(prompt("Valor Unitário (R$):", "0"));
+            const qtd = parseInt(prompt("Quantidade:", "1"));
+            
+            const totalItem = valor * qtd;
+            state.currentEditingOS.itens.push({ desc, valor, qtd, total: totalItem });
+            
+            // Para simplificar no protótipo, jogamos o valor no total de "maoDeObra" e "pecas" (aqui somando tudo)
+            state.currentEditingOS.maoDeObra = state.currentEditingOS.itens.reduce((acc, i) => acc + i.total, 0);
+            
+            render();
+        };
+
         // --- NAVEGAÇÃO E MODAIS ---
         window.switchTab = (tabId) => {
             state.activeTab = tabId;
+            state.osViewMode = 'list'; // Sempre reseta a view de OS para a lista
             render();
         };
 
@@ -273,7 +461,7 @@
         window.finalizarOS = (osId) => {
             state.osAtivas = state.osAtivas.filter(o => o.id !== osId);
             window.toggleCheckoutModal(false);
-            render();
+            window.switchTab('dashboard'); // Volta pro painel após fechar
         };
 
         // --- RENDERIZADORES ---
@@ -382,9 +570,9 @@
                                 <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                                 <span class="text-[8px] font-black uppercase tracking-tighter">Painel</span>
                             </button>
-                            <button onclick="switchTab('equipe')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-equipe">
-                                <i data-lucide="hard-hat" class="w-5 h-5"></i>
-                                <span class="text-[8px] font-black uppercase tracking-tighter">Equipe</span>
+                            <button onclick="switchTab('os')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-os">
+                                <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                                <span class="text-[8px] font-black uppercase tracking-tighter">O.S.</span>
                             </button>
                             <div class="relative">
                                 <button onclick="toggleScanModal(true)" class="bg-red-600 text-white p-4 rounded-[1.5rem] -mt-10 border-8 border-zinc-950 shadow-2xl active:scale-90 transition-transform">
@@ -420,9 +608,130 @@
             if (state.activeTab === 'estoque') content.innerHTML = renderEstoque();
             if (state.activeTab === 'print') content.innerHTML = renderPrint();
             if (state.activeTab === 'config') content.innerHTML = renderConfig();
-            if (state.activeTab === 'os') content.innerHTML = `<div class="p-12 text-center text-zinc-600 uppercase font-black opacity-20 italic">Lista Geral de O.S. em construção...</div>`;
+            
+            // Lógica de Renderização do Módulo OS
+            if (state.activeTab === 'os') {
+                content.innerHTML = state.osViewMode === 'list' ? renderOSList() : renderOSEditor();
+            }
 
             lucide.createIcons();
+        }
+
+        function renderOSList() {
+            return `
+                <div class="p-4 md:p-8 space-y-6 animate-in fade-in duration-500">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Ordens de Serviço</h2>
+                        <button onclick="window.toggleNewOSModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Nova O.S. Manual
+                        </button>
+                    </div>
+                    
+                    <section class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-xl">
+                        <div class="divide-y divide-zinc-800">
+                            ${state.osAtivas.length > 0 ? state.osAtivas.map(os => `
+                                <div onclick="window.openOSEditor(${os.id})" class="p-5 flex items-center justify-between hover:bg-zinc-800/40 cursor-pointer border-b border-zinc-800 last:border-0 group transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-2 h-8 rounded-full ${os.status === 'Pronta' ? 'bg-emerald-500' : 'bg-orange-500'}"></div>
+                                        <div>
+                                            <p class="font-black text-white uppercase group-hover:text-red-500 transition-colors">${os.modelo} <span class="text-zinc-500 font-mono text-xs ml-1">[${os.placa}]</span></p>
+                                            <p class="text-[10px] text-zinc-500 font-bold uppercase">${os.cliente}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <div class="text-right hidden sm:block">
+                                            <p class="text-[10px] font-black text-white italic uppercase">${os.status}</p>
+                                            <p class="text-[9px] text-zinc-600 font-mono italic">TOTAL: R$ ${(os.pecas + os.maoDeObra).toFixed(2)}</p>
+                                        </div>
+                                        <i data-lucide="chevron-right" class="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 transition-colors"></i>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <div class="p-16 text-center">
+                                    <i data-lucide="inbox" class="mx-auto text-zinc-800 w-12 h-12 mb-4"></i>
+                                    <p class="text-zinc-600 text-[10px] uppercase font-black tracking-[0.2em]">Nenhuma O.S. ativa no momento</p>
+                                </div>
+                            `}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function renderOSEditor() {
+            const os = state.currentEditingOS;
+            const mecanico = state.equipe.find(m => m.id === os.mecanicoId);
+            const total = os.pecas + os.maoDeObra;
+
+            return `
+                <div class="p-4 md:p-8 space-y-6 animate-in slide-in-from-bottom-4">
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <button onclick="state.osViewMode = 'list'; render();" class="text-zinc-500 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-zinc-900 px-4 py-2 rounded-xl">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar à Lista
+                        </button>
+                        <button onclick="window.toggleCheckoutModal(true, ${os.id})" class="w-full md:w-auto bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Concluir & Receber O.S.
+                        </button>
+                    </div>
+
+                    <div class="bg-zinc-900 p-6 md:p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl space-y-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-800 pb-8 gap-4">
+                            <div>
+                                <h3 class="text-2xl font-black italic uppercase text-white mb-1">O.S. #${os.id}</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1 bg-red-600/10 text-red-500 rounded-full text-[10px] font-black uppercase tracking-widest italic">${os.placa}</span>
+                                    <span class="text-zinc-500 text-sm font-bold uppercase">${os.modelo}</span>
+                                </div>
+                            </div>
+                            <div class="text-left md:text-right bg-zinc-950 p-4 rounded-2xl border border-zinc-800 w-full md:w-auto">
+                                <p class="text-[10px] text-zinc-600 uppercase font-black tracking-widest">Responsável & Cliente</p>
+                                <p class="text-white font-black italic uppercase text-sm mt-1">${mecanico?.nome}</p>
+                                <p class="text-[10px] text-zinc-500 font-bold uppercase">Cliente: ${os.cliente}</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-black uppercase tracking-widest text-zinc-500">Orçamento Detalhado</h4>
+                                <button onclick="window.addItemToOS()" class="text-red-500 hover:text-red-400 bg-red-500/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 transition-colors">
+                                    <i data-lucide="plus" class="w-3 h-3"></i> Lançar Item
+                                </button>
+                            </div>
+
+                            <div class="bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-zinc-900/50 text-zinc-600 uppercase text-[10px] font-black tracking-widest">
+                                        <tr>
+                                            <th class="p-4">Descrição</th>
+                                            <th class="p-4 text-center">Qtd</th>
+                                            <th class="p-4 text-right">Unitário</th>
+                                            <th class="p-4 text-right">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-zinc-900">
+                                        ${os.itens && os.itens.length > 0 ? os.itens.map(i => `
+                                            <tr class="hover:bg-zinc-900/30">
+                                                <td class="p-4 font-bold text-zinc-200">${i.desc}</td>
+                                                <td class="p-4 text-center text-zinc-500 font-mono">${i.qtd}x</td>
+                                                <td class="p-4 text-right text-zinc-500 font-mono">R$ ${i.valor.toFixed(2)}</td>
+                                                <td class="p-4 text-right font-black text-white italic">R$ ${i.total.toFixed(2)}</td>
+                                            </tr>
+                                        `).join('') : `
+                                            <tr><td colspan="4" class="p-10 text-center text-zinc-700 font-black uppercase text-[10px] tracking-widest italic">Nenhum item lançado no orçamento...</td></tr>
+                                        `}
+                                    </tbody>
+                                    <tfoot class="bg-zinc-900/50 border-t border-zinc-800">
+                                        <tr>
+                                            <td colspan="3" class="p-6 text-right font-black uppercase text-xs text-zinc-500 italic">Total:</td>
+                                            <td class="p-6 text-right font-black text-2xl text-emerald-500 italic">R$ ${total.toFixed(2)}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         function renderDashboard() {
