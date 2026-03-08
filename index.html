@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oficina G3 v04</title>
+    <title>Oficina G3 - Gestão Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -65,6 +65,11 @@
             overflow-y: auto;
             z-index: 100;
         }
+        
+        /* Aplicação global da borda de 10px */
+        .rounded-\[10px\] {
+            border-radius: 10px !important;
+        }
     </style>
 </head>
 <body class="selection:bg-red-600/30">
@@ -77,7 +82,7 @@
     <div id="modal-scan" class="hidden fixed inset-0 z-50 bg-black/98 flex flex-col p-4 md:p-12 animate-in fade-in zoom-in duration-300">
         <div class="flex justify-between items-center mb-10 max-w-5xl mx-auto w-full">
             <div class="flex items-center gap-4">
-                <div class="bg-zinc-800 p-2 rounded-xl">
+                <div class="bg-zinc-800 p-2 rounded-[10px]">
                     <img src="https://raw.githubusercontent.com/weversonf/PDV-G3/refs/heads/main/logo_pdv_oficina_g3.png" alt="Logo G3" class="w-8 h-8 logo-img">
                 </div>
                 <div>
@@ -85,21 +90,21 @@
                     <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider text-red-500">Mecanismo G3 Vision</p>
                 </div>
             </div>
-            <button onclick="toggleScanModal(false)" class="text-zinc-400 bg-zinc-900 hover:bg-zinc-800 p-3 rounded-2xl transition-colors">✕</button>
+            <button onclick="toggleScanModal(false)" class="text-zinc-400 bg-zinc-900 hover:bg-zinc-800 p-3 rounded-[10px] transition-colors">✕</button>
         </div>
 
         <div class="flex-1 flex flex-col lg:flex-row gap-12 items-center justify-center max-w-6xl mx-auto w-full">
-            <div class="w-full max-w-md aspect-[3/4.5] border-2 border-zinc-800 rounded-[3rem] relative overflow-hidden bg-zinc-950 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
+            <div class="w-full max-w-md aspect-[3/4.5] border-2 border-zinc-800 rounded-[10px] relative overflow-hidden bg-zinc-950 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
                 <div class="animate-scan"></div>
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-12">
-                    <div class="w-full h-full border border-zinc-800/50 rounded-2xl flex flex-col items-center justify-center">
+                    <div class="w-full h-full border border-zinc-800/50 rounded-[10px] flex flex-col items-center justify-center">
                         <i data-lucide="camera" class="text-zinc-800 w-12 h-12 mb-4"></i>
                         <p class="text-zinc-600 text-[10px] uppercase font-black tracking-widest px-6 leading-relaxed">Centralize o cabeçalho e os checklists marcados</p>
                     </div>
                 </div>
             </div>
             <div class="max-w-xs w-full space-y-6">
-                <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800">
+                <div class="bg-zinc-900 p-6 rounded-[10px] border border-zinc-800">
                     <p class="text-xs text-white font-black uppercase tracking-widest mb-4 italic">Como Funciona:</p>
                     <div class="space-y-4 text-[10px] text-zinc-400 font-bold uppercase leading-relaxed tracking-tight">
                         <div class="flex gap-3"><span class="text-red-500 font-black italic">01.</span><p>O sistema reconhece a placa escrita.</p></div>
@@ -107,7 +112,7 @@
                         <div class="flex gap-3"><span class="text-red-500 font-black italic">03.</span><p>Estoque baixa automaticamente.</p></div>
                     </div>
                 </div>
-                <button onclick="toggleScanModal(false)" class="w-full bg-red-600 text-white font-black py-5 rounded-3xl active:scale-95 transition-all shadow-2xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
+                <button onclick="toggleScanModal(false)" class="w-full bg-red-600 text-white font-black py-5 rounded-[10px] active:scale-95 transition-all shadow-2xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
                     Capturar O.S.
                 </button>
             </div>
@@ -116,7 +121,7 @@
 
     <!-- Modal: Checkout PDV -->
     <div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
             <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Finalizar Venda (PDV)</h3>
@@ -133,7 +138,7 @@
 
     <!-- Modal: Nova OS Manual -->
     <div id="modal-nova-os" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
             <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Nova O.S. Manual</h3>
@@ -142,12 +147,12 @@
                 <button onclick="toggleNewOSModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
             </div>
             
-            <form onsubmit="handleCreateOS(event)" class="p-8 space-y-4">
+            <form onsubmit="window.handleCreateOS(event)" class="p-8 space-y-4">
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Placa do Veículo</label>
                     <div class="flex gap-2">
-                        <input id="os-placa" type="text" required placeholder="ABC1234" maxlength="8" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-500 uppercase transition-all">
-                        <button type="button" onclick="window.checkPlaca(document.getElementById('os-placa').value)" class="bg-zinc-800 hover:bg-zinc-700 text-white px-4 rounded-xl transition-colors border border-zinc-700 flex items-center justify-center active:scale-95">
+                        <input id="os-placa" type="text" required placeholder="ABC1234" maxlength="8" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-500 uppercase transition-all">
+                        <button type="button" onclick="window.checkPlaca(document.getElementById('os-placa').value)" class="bg-zinc-800 hover:bg-zinc-700 text-white px-4 rounded-[10px] transition-colors border border-zinc-700 flex items-center justify-center active:scale-95">
                             <i data-lucide="search" class="w-5 h-5"></i>
                         </button>
                     </div>
@@ -156,13 +161,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Montadora</label>
-                        <select id="os-montadora" required onchange="updateModelosDropdown(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none transition-all">
+                        <select id="os-montadora" required onchange="window.updateModelosDropdown(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600 appearance-none transition-all">
                             <option value="">Selecione...</option>
                         </select>
                     </div>
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Modelo</label>
-                        <select id="os-modelo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none transition-all">
+                        <select id="os-modelo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600 appearance-none transition-all">
                             <option value="">Selecione a montadora...</option>
                         </select>
                     </div>
@@ -170,20 +175,20 @@
 
                 <div class="relative">
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Cliente</label>
-                    <input id="os-cliente-input" type="text" required oninput="searchClients(this.value)" placeholder="Busque ou digite novo..." autocomplete="off" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-500 transition-all">
-                    <div id="os-cliente-suggestions" class="hidden absolute left-0 right-0 mt-1 bg-zinc-900 border border-zinc-800 rounded-xl suggestion-box shadow-2xl">
+                    <input id="os-cliente-input" type="text" required oninput="window.searchClients(this.value)" placeholder="Busque ou digite novo..." autocomplete="off" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-500 transition-all">
+                    <div id="os-cliente-suggestions" class="hidden absolute left-0 right-0 mt-1 bg-zinc-900 border border-zinc-800 rounded-[10px] suggestion-box shadow-2xl">
                         <!-- Suggestions go here -->
                     </div>
                 </div>
 
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Mecânico Responsável</label>
-                    <select id="os-mecanico" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
+                    <select id="os-mecanico" required class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600 appearance-none">
                         <!-- Injected via JS -->
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-3xl uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all">
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all">
                     Abrir O.S. (Ir para Orçamento)
                 </button>
             </form>
@@ -192,7 +197,7 @@
 
     <!-- Modal: Lançar Item -->
     <div id="modal-add-item" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
             <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Lançar Item</h3>
@@ -201,24 +206,24 @@
                 <button onclick="toggleAddItemModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
             </div>
             
-            <form onsubmit="confirmAddItem(event)" class="p-8 space-y-4">
+            <form onsubmit="window.confirmAddItem(event)" class="p-8 space-y-4">
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Descrição</label>
-                    <input id="item-desc" type="text" required placeholder="Ex: Troca de óleo, Limpeza de bico..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                    <input id="item-desc" type="text" required placeholder="Ex: Troca de óleo, Limpeza de bico..." class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Valor Unitário (R$)</label>
-                        <input id="item-valor" type="number" step="0.01" required placeholder="0.00" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                        <input id="item-valor" type="number" step="0.01" required placeholder="0.00" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                     </div>
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Quantidade</label>
-                        <input id="item-qtd" type="number" required value="1" min="1" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                        <input id="item-qtd" type="number" required value="1" min="1" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-3xl uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
                     Adicionar ao Orçamento
                 </button>
             </form>
@@ -227,7 +232,7 @@
 
     <!-- Modal: Novo Cliente -->
     <div id="modal-cliente" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
             <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter" id="cliente-modal-title">Novo Cliente</h3>
@@ -236,30 +241,30 @@
                 <button onclick="toggleClienteModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
             </div>
             
-            <form onsubmit="saveCliente(event)" class="p-8 space-y-4">
+            <form onsubmit="window.saveCliente(event)" class="p-8 space-y-4">
                 <input type="hidden" id="cli-id" value="">
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Nome Completo</label>
-                    <input id="cli-nome" type="text" required placeholder="Ex: João da Silva" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                    <input id="cli-nome" type="text" required placeholder="Ex: João da Silva" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Telefone / WhatsApp</label>
-                        <input id="cli-fone" type="text" placeholder="Ex: 85999999999" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                        <input id="cli-fone" type="text" placeholder="Ex: 85999999999" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                     </div>
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">CPF / CNPJ</label>
-                        <input id="cli-cpf" type="text" placeholder="Apenas números..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                        <input id="cli-cpf" type="text" placeholder="Apenas números..." class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                     </div>
                 </div>
 
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">E-mail</label>
-                    <input id="cli-email" type="email" placeholder="joao@email.com" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-red-600">
+                    <input id="cli-email" type="email" placeholder="joao@email.com" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
                 </div>
 
-                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-3xl uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
                     Salvar Cliente
                 </button>
             </form>
@@ -268,7 +273,7 @@
 
     <!-- Modal: Adicionar/Editar Veículo -->
     <div id="modal-veiculo" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-800 overflow-hidden shadow-2xl">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
             <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter" id="veiculo-modal-title">Vincular Veículo</h3>
@@ -277,64 +282,82 @@
                 <button onclick="toggleVeiculoModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
             </div>
             
-            <form onsubmit="saveVeiculo(event)" class="p-8 space-y-4">
+            <form onsubmit="window.saveVeiculo(event)" class="p-8 space-y-4">
                 <input type="hidden" id="veic-cli-id" value="">
                 <input type="hidden" id="veic-original-placa" value="">
                 
                 <div>
                     <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Placa</label>
-                    <input id="veic-placa" type="text" required placeholder="ABC1234" maxlength="8" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-emerald-500 uppercase">
+                    <input id="veic-placa" type="text" required placeholder="ABC1234" maxlength="8" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-emerald-500 uppercase">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Montadora</label>
-                        <select id="veic-montadora" required onchange="updateVeiculoModelosDropdown(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-emerald-500 appearance-none">
+                        <select id="veic-montadora" required onchange="window.updateVeiculoModelosDropdown(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-emerald-500 appearance-none">
                             <option value="">Selecione...</option>
                         </select>
                     </div>
                     <div>
                         <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Modelo</label>
-                        <select id="veic-modelo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-white font-bold outline-none focus:border-emerald-500 appearance-none">
+                        <select id="veic-modelo" required class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-emerald-500 appearance-none">
                             <option value="">Selecione a montadora...</option>
                         </select>
                     </div>
                 </div>
 
-        <!-- Modal: Confirmar Exclusão de Veículo -->
-        <div id="modal-delete-confirm" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-            <div class="bg-zinc-900 w-full max-w-sm rounded-[2rem] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
-                <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
-                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Cilindrada (CC)</label>
+                        <input id="veic-cc" type="number" placeholder="Ex: 250" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Ano</label>
+                        <input id="veic-ano" type="number" placeholder="Ex: 2023" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-emerald-500">
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Veículo?</h3>
-                    <p class="text-zinc-500 text-xs font-bold" id="delete-confirm-text"></p>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="closeDeleteModal()" class="bg-zinc-800 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
-                    <button onclick="confirmDeleteVeiculo()" class="bg-red-600 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Modal: Confirmar Exclusão de Cliente -->
-        <div id="modal-delete-cliente" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-            <div class="bg-zinc-900 w-full max-w-sm rounded-[2rem] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
-                <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
-                    <i data-lucide="user-x" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Cliente?</h3>
-                    <p class="text-zinc-500 text-xs font-bold" id="delete-cliente-text"></p>
-                    <p class="text-red-500 text-[10px] font-bold mt-2 uppercase tracking-widest">Atenção: Os veículos vinculados também serão apagados.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="closeDeleteClienteModal()" class="bg-zinc-800 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
-                    <button onclick="confirmDeleteCliente()" class="bg-red-600 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
-                </div>
+                <button type="submit" class="w-full bg-emerald-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-emerald-900/20 active:scale-95 transition-all mt-4" id="btn-save-veiculo">
+                    Adicionar Veículo
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão de Veículo -->
+    <div id="modal-delete-confirm" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-sm rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
+            <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Veículo?</h3>
+                <p class="text-zinc-500 text-xs font-bold" id="delete-confirm-text"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.closeDeleteModal()" class="bg-zinc-800 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
+                <button onclick="window.confirmDeleteVeiculo()" class="bg-red-600 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
             </div>
         </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão de Cliente -->
+    <div id="modal-delete-cliente" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-sm rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
+            <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="user-x" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Cliente?</h3>
+                <p class="text-zinc-500 text-xs font-bold" id="delete-cliente-text"></p>
+                <p class="text-red-500 text-[10px] font-bold mt-2 uppercase tracking-widest">Atenção: Os veículos vinculados também serão apagados.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.closeDeleteClienteModal()" class="bg-zinc-800 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
+                <button onclick="window.confirmDeleteCliente()" class="bg-red-600 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -362,7 +385,7 @@
             corPrimaria: '#ef4444',
             logoUrl: 'https://raw.githubusercontent.com/weversonf/PDV-G3/refs/heads/main/logo_pdv_oficina_g3.png',
             user: null,
-            osViewMode: 'list', // 'list' ou 'edit'
+            osViewMode: 'list',
             currentEditingOS: null,
             montadoras: {
                 "Yamaha": ["Fazer 250", "Lander 250", "MT-03", "Factor 150", "NMax 160", "Crosser 150"],
@@ -404,8 +427,6 @@
                 await signInWithEmailAndPassword(auth, email, pass);
             } catch (error) {
                 console.warn("Falha no login Firebase:", error.code);
-                // alert() evitado nas regras gerais de ambiente web embed, substituído no flow.
-                // Mas mantemos compatibilidade com o demo automático para evitar bloqueios do usuário
                 state.user = { uid: 'demo-local', email: 'demo@oficinag3.com.br' };
                 state.isLoggedIn = true;
                 render();
@@ -531,7 +552,6 @@
                         }, 50);
                     }
                 } else {
-                    // Adicionado alerta claro para avisar que a busca foi feita mas o veículo não existe
                     alert("Veículo não encontrado no sistema. Pode preencher os dados manualmente para cadastrar.");
                     inputPlaca.classList.remove('border-emerald-500');
                     inputPlaca.classList.add('border-zinc-800');
@@ -631,7 +651,7 @@
                 document.getElementById('cliente-modal-title').innerText = isEdit ? 'Editar Cliente' : 'Novo Cliente';
                 
                 if (isEdit) {
-                    const c = state.clientes.find(x => x.id === clienteId);
+                    const c = state.clientes.find(x => x.id == clienteId); // Uso de == para segurança
                     document.getElementById('cli-id').value = c.id;
                     document.getElementById('cli-nome').value = c.nome;
                     document.getElementById('cli-fone').value = c.fone || '';
@@ -675,9 +695,11 @@
         window.toggleVeiculoModal = (show, clienteId = null, placaEdit = null) => {
             const modal = document.getElementById('modal-veiculo');
             if (show) {
-                const c = state.clientes.find(x => x.id === clienteId);
+                const c = state.clientes.find(x => x.id == clienteId);
+                if(!c) return; // Segurança extra
+                
                 document.getElementById('veiculo-cliente-nome').innerText = `Cliente: ${c.nome}`;
-                document.getElementById('veic-cli-id').value = clienteId;
+                document.getElementById('veic-cli-id').value = c.id;
                 
                 const montadoraSelect = document.getElementById('veic-montadora');
                 montadoraSelect.innerHTML = '<option value="">Selecione...</option>' + 
@@ -722,16 +744,20 @@
 
         window.saveVeiculo = (e) => {
             e.preventDefault();
-            const clienteId = parseInt(document.getElementById('veic-cli-id').value);
+            // Utilização do Number para evitar qualquer conflito de tipagem com Date.now()
+            const clienteId = Number(document.getElementById('veic-cli-id').value);
             const originalPlaca = document.getElementById('veic-original-placa').value;
             
-            const placa = document.getElementById('veic-placa').value.toUpperCase();
+            // Limpa caracteres especiais da placa inserida
+            const placa = document.getElementById('veic-placa').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             const montadora = document.getElementById('veic-montadora').value;
             const modelo = document.getElementById('veic-modelo').value;
             const cc = document.getElementById('veic-cc').value;
             const ano = document.getElementById('veic-ano').value;
 
-            const c = state.clientes.find(x => x.id === clienteId);
+            // Busca cliente usando == garantindo que o tipo não é problema
+            const c = state.clientes.find(x => x.id == clienteId);
+            
             if (c) {
                 if (originalPlaca) {
                     // Atualiza veículo existente
@@ -740,8 +766,11 @@
                         c.veiculos[vIndex] = { placa, montadora, modelo, cc, ano };
                     }
                 } else {
-                    // Adiciona novo veículo
-                    c.veiculos.push({ placa, montadora, modelo, cc, ano });
+                    // Verifica se a placa já não está na lista desse cliente (previne duplicação)
+                    const jaExiste = c.veiculos.find(v => v.placa === placa);
+                    if(!jaExiste) {
+                        c.veiculos.push({ placa, montadora, modelo, cc, ano });
+                    }
                 }
             }
             window.toggleVeiculoModal(false);
@@ -764,7 +793,7 @@
 
         window.confirmDeleteVeiculo = () => {
             if (veiculoToDelete) {
-                const c = state.clientes.find(x => x.id === veiculoToDelete.clienteId);
+                const c = state.clientes.find(x => x.id == veiculoToDelete.clienteId);
                 if (c) {
                     c.veiculos = c.veiculos.filter(v => v.placa !== veiculoToDelete.placa);
                     render();
@@ -789,7 +818,7 @@
 
         window.confirmDeleteCliente = () => {
             if (clienteToDelete) {
-                state.clientes = state.clientes.filter(c => c.id !== clienteToDelete);
+                state.clientes = state.clientes.filter(c => c.id == clienteToDelete);
                 render();
                 closeDeleteClienteModal();
             }
@@ -829,7 +858,7 @@
                             <span class="text-3xl font-black text-emerald-500 italic">R$ ${(os.pecas + os.maoDeObra).toFixed(2)}</span>
                         </div>
                     </div>
-                    <div class="bg-zinc-950 p-4 rounded-2xl border border-zinc-800 space-y-2 text-center">
+                    <div class="bg-zinc-950 p-4 rounded-[10px] border border-zinc-800 space-y-2 text-center">
                         <p class="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-2 italic">Repartição G3</p>
                         <div class="flex justify-between text-[10px] font-bold">
                             <span class="text-zinc-500 uppercase">COMISSÃO MECÂNICO (${mecanico.taxa}%):</span>
@@ -841,15 +870,15 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-emerald-500 transition-all">
+                        <button onclick="window.finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-[10px] border-2 border-transparent hover:border-emerald-500 transition-all">
                             <i data-lucide="banknote" class="text-zinc-500 mb-2"></i>
                             <span class="text-[8px] font-black uppercase">Dinheiro</span>
                         </button>
-                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-blue-500 transition-all">
+                        <button onclick="window.finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-[10px] border-2 border-transparent hover:border-blue-500 transition-all">
                             <i data-lucide="credit-card" class="text-zinc-500 mb-2"></i>
                             <span class="text-[8px] font-black uppercase">Cartão</span>
                         </button>
-                        <button onclick="finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-2xl border-2 border-transparent hover:border-purple-500 transition-all">
+                        <button onclick="window.finalizarOS(${os.id})" class="flex flex-col items-center justify-center p-4 bg-zinc-800 rounded-[10px] border-2 border-transparent hover:border-purple-500 transition-all">
                             <i data-lucide="qr-code" class="text-zinc-500 mb-2"></i>
                             <span class="text-[8px] font-black uppercase">Pix</span>
                         </button>
@@ -883,25 +912,25 @@
         function renderLogin() {
             return `
                 <div class="min-h-screen login-bg flex items-center justify-center p-6">
-                    <div class="w-full max-w-md bg-zinc-900/50 backdrop-blur-xl p-10 rounded-[2.5rem] border border-zinc-800 shadow-2xl">
+                    <div class="w-full max-w-md bg-zinc-900/50 backdrop-blur-xl p-10 rounded-[10px] border border-zinc-800 shadow-2xl">
                         <div class="text-center mb-10">
-                            <div class="bg-white/5 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl border border-white/10">
+                            <div class="bg-white/5 w-20 h-20 rounded-[10px] flex items-center justify-center mx-auto mb-6 shadow-xl border border-white/10">
                                 <img src="${state.logoUrl}" alt="Logo G3" class="w-12 h-12 logo-img">
                             </div>
                             <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Oficina G3</h2>
                             <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-2 italic">Management System</p>
                         </div>
 
-                        <form onsubmit="handleLogin(event)" class="space-y-6">
+                        <form onsubmit="window.handleLogin(event)" class="space-y-6">
                             <div>
                                 <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Usuário ou E-mail</label>
-                                <input id="login-user" type="text" required placeholder="Ex: edmotos" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
+                                <input id="login-user" type="text" required placeholder="Ex: edmotos" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
                             </div>
                             <div>
                                 <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Senha</label>
-                                <input id="login-pass" type="password" required placeholder="••••••••" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
+                                <input id="login-pass" type="password" required placeholder="••••••••" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
                             </div>
-                            <button id="btn-login" type="submit" class="w-full bg-red-600 text-white font-black py-5 rounded-3xl active:scale-95 transition-all shadow-xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
+                            <button id="btn-login" type="submit" class="w-full bg-red-600 text-white font-black py-5 rounded-[10px] active:scale-95 transition-all shadow-xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
                                 Entrar no Sistema
                             </button>
                         </form>
@@ -915,42 +944,42 @@
                 <div class="flex min-h-screen">
                     <aside class="hidden md:flex flex-col w-64 bg-zinc-900 border-r border-zinc-800 h-screen sticky top-0">
                         <div class="p-6 border-b border-zinc-800 flex items-center gap-3">
-                            <div class="bg-white/5 p-1.5 rounded-lg border border-white/10">
+                            <div class="bg-white/5 p-1.5 rounded-[10px] border border-white/10">
                                 <img src="${state.logoUrl}" alt="Logo" class="w-6 h-6 logo-img">
                             </div>
                             <h1 class="text-lg font-bold italic uppercase tracking-tighter text-white">${state.nomeOficina}</h1>
                         </div>
                         <nav class="flex-1 p-4 space-y-1">
-                            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Painel de Controle</span>
                             </button>
-                            <button onclick="switchTab('os')" id="nav-os" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('os')" id="nav-os" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="clipboard-list" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Ordens de Serviço</span>
                             </button>
-                            <button onclick="switchTab('clientes')" id="nav-clientes" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('clientes')" id="nav-clientes" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="users" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Clientes & Veículos</span>
                             </button>
-                            <button onclick="switchTab('equipe')" id="nav-equipe" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('equipe')" id="nav-equipe" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="hard-hat" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Equipe & Comissões</span>
                             </button>
-                            <button onclick="switchTab('estoque')" id="nav-estoque" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('estoque')" id="nav-estoque" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="package" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Estoque & Lucro</span>
                             </button>
-                            <button onclick="switchTab('print')" id="nav-print" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                            <button onclick="window.switchTab('print')" id="nav-print" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                 <i data-lucide="printer" class="w-4 h-4"></i>
                                 <span class="text-sm font-bold">Imprimir Checklist</span>
                             </button>
                             <div class="pt-4 mt-4 border-t border-zinc-800">
-                                <button onclick="switchTab('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <button onclick="window.switchTab('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-500 hover:bg-zinc-800 transition-all">
                                     <i data-lucide="settings" class="w-4 h-4"></i>
                                     <span class="text-sm font-bold">Configurações</span>
                                 </button>
-                                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-700 hover:text-red-500 transition-all">
+                                <button onclick="window.handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-[10px] text-zinc-700 hover:text-red-500 transition-all">
                                     <i data-lucide="log-out" class="w-4 h-4"></i>
                                     <span class="text-sm font-bold">Sair</span>
                                 </button>
@@ -964,7 +993,7 @@
                                 <img src="${state.logoUrl}" alt="Logo" class="w-6 h-6 logo-img">
                                 <h1 class="text-md font-black italic uppercase tracking-tighter">${state.nomeOficina}</h1>
                             </div>
-                            <button onclick="switchTab('config')" class="p-2.5 bg-zinc-800 rounded-2xl text-zinc-400">
+                            <button onclick="window.switchTab('config')" class="p-2.5 bg-zinc-800 rounded-[10px] text-zinc-400">
                                 <i data-lucide="settings" class="w-5 h-5"></i>
                             </button>
                         </header>
@@ -974,24 +1003,19 @@
                         </main>
 
                         <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-lg border-t border-zinc-800 flex justify-around p-4 pb-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
-                            <button onclick="switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-dashboard">
+                            <button onclick="window.switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600 w-1/4" id="m-nav-dashboard">
                                 <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                                 <span class="text-[8px] font-black uppercase tracking-tighter">Painel</span>
                             </button>
-                            <button onclick="switchTab('os')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-os">
+                            <button onclick="window.switchTab('os')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600 w-1/4" id="m-nav-os">
                                 <i data-lucide="clipboard-list" class="w-5 h-5"></i>
                                 <span class="text-[8px] font-black uppercase tracking-tighter">O.S.</span>
                             </button>
-                            <div class="relative">
-                                <button onclick="toggleScanModal(true)" class="bg-red-600 text-white p-4 rounded-[1.5rem] -mt-10 border-8 border-zinc-950 shadow-2xl active:scale-90 transition-transform">
-                                    <i data-lucide="camera" class="w-6 h-6"></i>
-                                </button>
-                            </div>
-                            <button onclick="switchTab('clientes')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-clientes">
+                            <button onclick="window.switchTab('clientes')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600 w-1/4" id="m-nav-clientes">
                                 <i data-lucide="users" class="w-5 h-5"></i>
                                 <span class="text-[8px] font-black uppercase tracking-tighter">Clientes</span>
                             </button>
-                            <button onclick="switchTab('estoque')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-estoque">
+                            <button onclick="window.switchTab('estoque')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600 w-1/4" id="m-nav-estoque">
                                 <i data-lucide="package" class="w-5 h-5"></i>
                                 <span class="text-[8px] font-black uppercase tracking-tighter">Peças</span>
                             </button>
@@ -1030,14 +1054,14 @@
                 <div class="p-4 md:p-8 space-y-6 animate-in fade-in duration-500">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                         <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Clientes & Frota</h2>
-                        <button onclick="window.toggleClienteModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
+                        <button onclick="window.toggleClienteModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-[10px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Novo Cliente
                         </button>
                     </div>
 
                     <div class="flex flex-col gap-4">
                         ${state.clientes.map(cli => `
-                            <div class="bg-zinc-900 rounded-[2rem] border border-zinc-800 shadow-xl overflow-hidden flex flex-col">
+                            <div class="bg-zinc-900 rounded-[10px] border border-zinc-800 shadow-xl overflow-hidden flex flex-col">
                                 <div class="p-5 border-b border-zinc-800 bg-zinc-900/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                     <div>
                                         <h3 class="text-lg font-black text-white">${cli.nome}</h3>
@@ -1048,10 +1072,10 @@
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="window.toggleClienteModal(true, ${cli.id})" class="p-2.5 text-zinc-400 hover:text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-all border border-zinc-800">
+                                        <button onclick="window.toggleClienteModal(true, ${cli.id})" class="p-2.5 text-zinc-400 hover:text-white bg-zinc-950 hover:bg-zinc-800 rounded-[10px] transition-all border border-zinc-800">
                                             <i data-lucide="edit" class="w-4 h-4"></i>
                                         </button>
-                                        <button onclick="window.promptDeleteCliente(${cli.id}, '${cli.nome}')" class="p-2.5 text-zinc-400 hover:text-red-500 bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-all border border-zinc-800">
+                                        <button onclick="window.promptDeleteCliente(${cli.id}, '${cli.nome}')" class="p-2.5 text-zinc-400 hover:text-red-500 bg-zinc-950 hover:bg-zinc-800 rounded-[10px] transition-all border border-zinc-800">
                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                                         </button>
                                     </div>
@@ -1065,12 +1089,12 @@
                                     </div>
                                     <div class="space-y-3">
                                         ${cli.veiculos && cli.veiculos.length > 0 ? cli.veiculos.map(v => `
-                                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-[10px] flex flex-col md:flex-row md:items-center justify-between gap-4">
                                                 <div>
                                                     <p class="font-black text-white uppercase text-sm">${v.modelo} <span class="text-zinc-600 text-[10px]">(${v.ano || '-'})</span></p>
                                                     <p class="text-[10px] text-zinc-500 font-bold uppercase">${v.montadora} • ${v.cc ? v.cc + 'cc' : 'CC N/A'}</p>
                                                 </div>
-                                                <div class="bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-lg flex items-center gap-3 w-fit">
+                                                <div class="bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-[10px] flex items-center gap-3 w-fit">
                                                     <span class="text-emerald-500 font-mono text-xs font-black uppercase tracking-widest pr-2 border-r border-zinc-800">${v.placa}</span>
                                                     <button onclick="window.toggleVeiculoModal(true, ${cli.id}, '${v.placa}')" class="text-zinc-500 hover:text-white transition-colors">
                                                         <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
@@ -1081,7 +1105,7 @@
                                                 </div>
                                             </div>
                                         `).join('') : `
-                                            <div class="text-center py-4 border border-dashed border-zinc-800 rounded-2xl">
+                                            <div class="text-center py-4 border border-dashed border-zinc-800 rounded-[10px]">
                                                 <p class="text-zinc-600 text-[10px] uppercase font-bold tracking-widest">Nenhum veículo vinculado</p>
                                             </div>
                                         `}
@@ -1097,14 +1121,19 @@
         function renderOSList() {
             return `
                 <div class="p-4 md:p-8 space-y-6 animate-in fade-in duration-500">
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                         <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Ordens de Serviço</h2>
-                        <button onclick="window.toggleNewOSModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Nova O.S. Manual
-                        </button>
+                        <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-3">
+                            <button onclick="window.toggleScanModal(true)" class="w-full sm:w-auto bg-zinc-800 text-white px-6 py-3 rounded-[10px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-zinc-700 active:scale-95 transition-all shadow-lg border border-zinc-700">
+                                <i data-lucide="camera" class="w-4 h-4 text-red-500"></i> Escanear O.S.
+                            </button>
+                            <button onclick="window.toggleNewOSModal(true)" class="w-full sm:w-auto bg-red-600 text-white px-6 py-3 rounded-[10px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Nova O.S. Manual
+                            </button>
+                        </div>
                     </div>
                     
-                    <section class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-xl">
+                    <section class="bg-zinc-900 rounded-[10px] border border-zinc-800 overflow-hidden shadow-xl">
                         <div class="divide-y divide-zinc-800">
                             ${state.osAtivas.length > 0 ? state.osAtivas.map(os => `
                                 <div onclick="window.openOSEditor(${os.id})" class="p-5 flex items-center justify-between hover:bg-zinc-800/40 cursor-pointer border-b border-zinc-800 last:border-0 group transition-colors">
@@ -1143,15 +1172,15 @@
             return `
                 <div class="p-4 md:p-8 space-y-6 animate-in slide-in-from-bottom-4">
                     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                        <button onclick="state.osViewMode = 'list'; render();" class="text-zinc-500 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-zinc-900 px-4 py-2 rounded-xl">
+                        <button onclick="state.osViewMode = 'list'; render();" class="text-zinc-500 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-zinc-900 px-4 py-2 rounded-[10px]">
                             <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar à Lista
                         </button>
-                        <button onclick="window.toggleCheckoutModal(true, ${os.id})" class="w-full md:w-auto bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20">
+                        <button onclick="window.toggleCheckoutModal(true, ${os.id})" class="w-full md:w-auto bg-emerald-600 text-white px-6 py-3 rounded-[10px] text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-emerald-500 shadow-lg shadow-emerald-900/20">
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Concluir & Receber O.S.
                         </button>
                     </div>
 
-                    <div class="bg-zinc-900 p-6 md:p-8 rounded-[2.5rem] border border-zinc-800 shadow-2xl space-y-8">
+                    <div class="bg-zinc-900 p-6 md:p-8 rounded-[10px] border border-zinc-800 shadow-2xl space-y-8">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-800 pb-8 gap-4">
                             <div>
                                 <h3 class="text-2xl font-black italic uppercase text-white mb-1">O.S. #${os.id}</h3>
@@ -1160,7 +1189,7 @@
                                     <span class="text-zinc-500 text-sm font-bold uppercase">${os.modelo}</span>
                                 </div>
                             </div>
-                            <div class="text-left md:text-right bg-zinc-950 p-4 rounded-2xl border border-zinc-800 w-full md:w-auto">
+                            <div class="text-left md:text-right bg-zinc-950 p-4 rounded-[10px] border border-zinc-800 w-full md:w-auto">
                                 <p class="text-[10px] text-zinc-600 uppercase font-black tracking-widest">Responsável & Cliente</p>
                                 <p class="text-white font-black italic uppercase text-sm mt-1">${mecanico?.nome}</p>
                                 <p class="text-[10px] text-zinc-500 font-bold uppercase">Cliente: ${os.cliente}</p>
@@ -1170,12 +1199,12 @@
                         <div class="space-y-4">
                             <div class="flex justify-between items-center">
                                 <h4 class="text-xs font-black uppercase tracking-widest text-zinc-500">Orçamento Detalhado</h4>
-                                <button onclick="window.toggleAddItemModal(true)" class="text-red-500 hover:text-red-400 bg-red-500/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 transition-colors">
+                                <button onclick="window.toggleAddItemModal(true)" class="text-red-500 hover:text-red-400 bg-red-500/10 px-4 py-2 rounded-[10px] text-[10px] font-black uppercase flex items-center gap-2 transition-colors">
                                     <i data-lucide="plus" class="w-3 h-3"></i> Lançar Item
                                 </button>
                             </div>
 
-                            <div class="bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden">
+                            <div class="bg-zinc-950 rounded-[10px] border border-zinc-800 overflow-hidden">
                                 <table class="w-full text-left text-sm">
                                     <thead class="bg-zinc-900/50 text-zinc-600 uppercase text-[10px] font-black tracking-widest">
                                         <tr>
@@ -1215,31 +1244,31 @@
             return `
                 <div class="p-4 md:p-8 pb-24 space-y-8 max-w-7xl mx-auto w-full animate-in fade-in duration-500">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                        <div class="bg-zinc-900 p-5 rounded-[10px] border border-zinc-800 shadow-sm">
                             <div class="flex justify-between items-start mb-4">
-                                <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                                <div class="p-2 rounded-[10px] bg-emerald-500/10 text-emerald-500"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
                                 <span class="text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">+12%</span>
                             </div>
                             <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Faturamento</p>
                             <p class="text-2xl font-black text-white">R$ 1.240</p>
                         </div>
-                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                        <div class="bg-zinc-900 p-5 rounded-[10px] border border-zinc-800 shadow-sm">
                             <div class="flex justify-between items-start mb-4">
-                                <div class="p-2 rounded-xl bg-blue-500/10 text-blue-500"><i data-lucide="clipboard-list" class="w-5 h-5"></i></div>
+                                <div class="p-2 rounded-[10px] bg-blue-500/10 text-blue-500"><i data-lucide="clipboard-list" class="w-5 h-5"></i></div>
                             </div>
                             <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">O.S. Ativas</p>
                             <p class="text-2xl font-black text-white">${state.osAtivas.length}</p>
                         </div>
-                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                        <div class="bg-zinc-900 p-5 rounded-[10px] border border-zinc-800 shadow-sm">
                             <div class="flex justify-between items-start mb-4">
-                                <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500"><i data-lucide="percent" class="w-5 h-5"></i></div>
+                                <div class="p-2 rounded-[10px] bg-purple-500/10 text-purple-500"><i data-lucide="percent" class="w-5 h-5"></i></div>
                             </div>
                             <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Comissões</p>
                             <p class="text-2xl font-black text-white">R$ 480</p>
                         </div>
-                        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 shadow-sm">
+                        <div class="bg-zinc-900 p-5 rounded-[10px] border border-zinc-800 shadow-sm">
                             <div class="flex justify-between items-start mb-4">
-                                <div class="p-2 rounded-xl bg-orange-500/10 text-orange-500"><i data-lucide="hard-hat" class="w-5 h-5"></i></div>
+                                <div class="p-2 rounded-[10px] bg-orange-500/10 text-orange-500"><i data-lucide="hard-hat" class="w-5 h-5"></i></div>
                             </div>
                             <p class="text-[10px] uppercase font-black text-zinc-600 tracking-widest mb-1">Equipe ON</p>
                             <p class="text-2xl font-black text-white">${state.equipe.length}</p>
@@ -1248,10 +1277,10 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-6">
-                            <section class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-xl">
+                            <section class="bg-zinc-900 rounded-[10px] border border-zinc-800 overflow-hidden shadow-xl">
                                 <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
                                     <div class="flex items-center gap-3">
-                                        <div class="bg-blue-500/20 p-2 rounded-lg text-blue-500"><i data-lucide="user-check" class="w-4 h-4"></i></div>
+                                        <div class="bg-blue-500/20 p-2 rounded-[10px] text-blue-500"><i data-lucide="user-check" class="w-4 h-4"></i></div>
                                         <div>
                                             <h2 class="font-black uppercase text-sm tracking-tighter text-white">Estado da Oficina</h2>
                                             <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Motos em Atendimento</p>
@@ -1271,7 +1300,7 @@
                                                     </div>
                                                 </div>
                                                 ${os.status === 'Pronta' ? `
-                                                    <button onclick="toggleCheckoutModal(true, ${os.id})" class="bg-emerald-600 text-white p-2.5 rounded-xl hover:bg-emerald-500 active:scale-90 shadow-lg">
+                                                    <button onclick="window.toggleCheckoutModal(true, ${os.id})" class="bg-emerald-600 text-white p-2.5 rounded-[10px] hover:bg-emerald-500 active:scale-90 shadow-lg">
                                                         <i data-lucide="dollar-sign" class="w-5 h-5"></i>
                                                     </button>
                                                 ` : `
@@ -1301,9 +1330,9 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${state.equipe.map(m => `
-                            <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 relative shadow-lg">
+                            <div class="bg-zinc-900 p-6 rounded-[10px] border border-zinc-800 relative shadow-lg">
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 border border-zinc-700 font-black">${m.nome.charAt(0)}</div>
+                                    <div class="w-12 h-12 bg-zinc-800 rounded-[10px] flex items-center justify-center text-zinc-400 border border-zinc-700 font-black">${m.nome.charAt(0)}</div>
                                     <div><h3 class="font-black text-white">${m.nome}</h3><p class="text-[10px] text-zinc-500 uppercase font-bold">${m.especialidade}</p></div>
                                 </div>
                                 <div class="space-y-4">
@@ -1326,7 +1355,7 @@
                     <div>
                         <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Stock & Markup</h2>
                     </div>
-                    <div class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
+                    <div class="bg-zinc-900 rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-zinc-950 text-zinc-600 uppercase text-[10px] font-black border-b border-zinc-800">
                                 <tr><th class="p-5">Peça</th><th class="p-5">Venda</th><th class="p-5 text-center">Quantidade</th></tr>
@@ -1351,11 +1380,11 @@
         function renderPrint() {
             return `
                 <div class="p-4 md:p-8 space-y-8 max-w-4xl mx-auto text-center">
-                    <div class="bg-zinc-900 p-12 rounded-[2.5rem] border border-zinc-800 shadow-2xl relative overflow-hidden">
+                    <div class="bg-zinc-900 p-12 rounded-[10px] border border-zinc-800 shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
                         <i data-lucide="printer" class="mx-auto text-zinc-700 w-12 h-12 mb-6"></i>
                         <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Guia de Entrada G3</h2>
-                        <button class="mt-8 bg-white text-black font-black py-4 px-12 rounded-2xl hover:bg-zinc-200 uppercase text-sm tracking-widest shadow-xl">Imprimir Modelo</button>
+                        <button class="mt-8 bg-white text-black font-black py-4 px-12 rounded-[10px] hover:bg-zinc-200 uppercase text-sm tracking-widest shadow-xl">Imprimir Modelo</button>
                     </div>
                 </div>
             `;
@@ -1365,12 +1394,12 @@
             return `
                 <div class="p-8 space-y-8 max-w-xl mx-auto">
                     <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Ajustes</h2>
-                    <div class="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 space-y-6 shadow-xl">
+                    <div class="bg-zinc-900 p-8 rounded-[10px] border border-zinc-800 space-y-6 shadow-xl">
                         <div>
                             <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Oficina</label>
-                            <input id="config-nome" type="text" value="${state.nomeOficina}" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none">
+                            <input id="config-nome" type="text" value="${state.nomeOficina}" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-4 text-white font-bold focus:border-red-600 outline-none">
                         </div>
-                        <button onclick="window.saveConfig()" class="w-full bg-zinc-800 text-white font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Salvar</button>
+                        <button onclick="window.saveConfig()" class="w-full bg-zinc-800 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-widest">Salvar</button>
                     </div>
                 </div>
             `;
