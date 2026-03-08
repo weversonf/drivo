@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDV Oficina G3 - v01</title>
+    <title>Oficina G3 - Gestão Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -49,103 +49,30 @@
         .mobile-tab-active {
             color: #ef4444 !important;
         }
+
+        .login-bg {
+            background: radial-gradient(circle at top right, #3f0a0a, transparent),
+                        radial-gradient(circle at bottom left, #1a1a1e, #09090b);
+        }
+
+        .logo-img {
+            object-fit: contain;
+        }
     </style>
 </head>
 <body class="selection:bg-red-600/30">
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar (Desktop) -->
-        <aside class="hidden md:flex flex-col w-64 bg-zinc-900 border-r border-zinc-800 h-screen sticky top-0">
-            <div class="p-6 border-b border-zinc-800 flex items-center gap-3">
-                <div class="bg-red-600 p-1.5 rounded-lg shadow-lg shadow-red-900/20">
-                    <i data-lucide="wrench" class="text-white w-5 h-5"></i>
-                </div>
-                <h1 id="brand-name-side" class="text-lg font-bold italic uppercase tracking-tighter text-white">Oficina G3</h1>
-            </div>
-            <nav class="flex-1 p-4 space-y-1">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                    <span class="text-sm font-bold">Painel de Controle</span>
-                </button>
-                <button onclick="switchTab('os')" id="nav-os" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-                    <span class="text-sm font-bold">Ordens de Serviço</span>
-                </button>
-                <button onclick="switchTab('equipe')" id="nav-equipe" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                    <i data-lucide="hard-hat" class="w-4 h-4"></i>
-                    <span class="text-sm font-bold">Equipe & Comissões</span>
-                </button>
-                <button onclick="switchTab('estoque')" id="nav-estoque" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                    <i data-lucide="package" class="w-4 h-4"></i>
-                    <span class="text-sm font-bold">Estoque & Lucro</span>
-                </button>
-                <button onclick="switchTab('print')" id="nav-print" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                    <i data-lucide="printer" class="w-4 h-4"></i>
-                    <span class="text-sm font-bold">Imprimir Checklist</span>
-                </button>
-                <div class="pt-4 mt-4 border-t border-zinc-800">
-                    <button onclick="switchTab('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span class="text-sm font-bold">Configurações</span>
-                    </button>
-                </div>
-            </nav>
-            <div class="p-4 bg-zinc-950/30 m-4 rounded-xl border border-zinc-800/50 text-[10px] text-zinc-600 uppercase font-black tracking-widest text-center">
-                G3 Engine v3.0
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-w-0">
-            <!-- Header (Mobile) -->
-            <header class="md:hidden bg-zinc-900 text-white p-5 flex justify-between items-center border-b border-zinc-800 sticky top-0 z-30">
-                <div class="flex items-center gap-3">
-                    <div class="bg-red-600 p-1.5 rounded-lg">
-                        <i data-lucide="wrench" class="text-white w-4 h-4"></i>
-                    </div>
-                    <h1 id="brand-name-mobile" class="text-md font-black italic uppercase tracking-tighter">Oficina G3</h1>
-                </div>
-                <button onclick="switchTab('config')" class="p-2.5 bg-zinc-800 rounded-2xl text-zinc-400">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                </button>
-            </header>
-
-            <main id="main-content" class="flex-1 custom-scrollbar overflow-y-auto">
-                <!-- Content injected here by JS -->
-            </main>
-
-            <!-- Bottom Nav (Mobile) -->
-            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-lg border-t border-zinc-800 flex justify-around p-4 pb-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
-                <button onclick="switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-dashboard">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                    <span class="text-[8px] font-black uppercase tracking-tighter">Painel</span>
-                </button>
-                <button onclick="switchTab('equipe')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-equipe">
-                    <i data-lucide="hard-hat" class="w-5 h-5"></i>
-                    <span class="text-[8px] font-black uppercase tracking-tighter">Equipe</span>
-                </button>
-                <div class="relative">
-                    <button onclick="toggleScanModal(true)" class="bg-red-600 text-white p-4 rounded-[1.5rem] -mt-10 border-8 border-zinc-950 shadow-2xl active:scale-90 transition-transform">
-                        <i data-lucide="camera" class="w-6 h-6"></i>
-                    </button>
-                </div>
-                <button onclick="switchTab('estoque')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-estoque">
-                    <i data-lucide="package" class="w-5 h-5"></i>
-                    <span class="text-[8px] font-black uppercase tracking-tighter">Peças</span>
-                </button>
-                <button onclick="switchTab('config')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-config">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                    <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
-                </button>
-            </nav>
-        </div>
+    <div id="app-root" class="min-h-screen">
+        <!-- Conteúdo injetado pelo JavaScript -->
     </div>
 
     <!-- Modal: Scan -->
     <div id="modal-scan" class="hidden fixed inset-0 z-50 bg-black/98 flex flex-col p-4 md:p-12 animate-in fade-in zoom-in duration-300">
         <div class="flex justify-between items-center mb-10 max-w-5xl mx-auto w-full">
             <div class="flex items-center gap-4">
-                <div class="bg-red-600 p-2 rounded-xl"><i data-lucide="camera" class="text-white w-6 h-6"></i></div>
+                <div class="bg-zinc-800 p-2 rounded-xl">
+                    <img src="https://raw.githubusercontent.com/weversonf/PDV-G3/refs/heads/main/logo_pdv_oficina_g3.png" alt="Logo G3" class="w-8 h-8 logo-img">
+                </div>
                 <div>
                     <h3 class="text-white font-black text-xl uppercase italic tracking-tighter">Digitalizar O.S. Papel</h3>
                     <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider text-red-500">Mecanismo G3 Vision</p>
@@ -197,12 +124,32 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0XgGJebX5aWQnCSXOJc7VXtENpXwc6ds",
+            authDomain: "g3sistema-a78bf.firebaseapp.com",
+            projectId: "g3sistema-a78bf",
+            storageBucket: "g3sistema-a78bf.firebasestorage.app",
+            messagingSenderId: "1042020177225",
+            appId: "1:1042020177225:web:a54c015fdc9be6f14e3698"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         // --- ESTADO GLOBAL ---
         let state = {
+            isLoggedIn: false,
             activeTab: 'dashboard',
             nomeOficina: 'Oficina G3',
             corPrimaria: '#ef4444',
+            logoUrl: 'https://raw.githubusercontent.com/weversonf/PDV-G3/refs/heads/main/logo_pdv_oficina_g3.png',
+            user: null,
             equipe: [
                 { id: 1, nome: 'Zeca Mecânico', especialidade: 'Motor/Injeção', comissaoAtiva: true, taxa: 10, produzidos: 4500 },
                 { id: 2, nome: 'Beto Suspensão', especialidade: 'Chassi/Freios', comissaoAtiva: true, taxa: 8, produzidos: 3200 },
@@ -224,18 +171,50 @@
             ]
         };
 
-        // --- NAVEGAÇÃO ---
-        function switchTab(tabId) {
+        // --- AUTENTICAÇÃO ---
+        onAuthStateChanged(auth, (user) => {
+            state.user = user;
+            state.isLoggedIn = !!user;
+            render();
+        });
+
+        window.handleLogin = async (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            const btn = document.getElementById('btn-login');
+            
+            btn.innerText = "VERIFICANDO...";
+            btn.disabled = true;
+
+            try {
+                // Lógica de login: Se não for e-mail, completa com o domínio padrão do sistema
+                const email = identifier.includes('@') ? identifier : `${identifier.toLowerCase().replace(/\s/g, '')}@oficinag3.com.br`;
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao entrar. Verifique se o usuário existe no Firebase Console.");
+                btn.innerText = "ENTRAR NO SISTEMA";
+                btn.disabled = false;
+            }
+        };
+
+        window.handleLogout = async () => {
+            await signOut(auth);
+        };
+
+        // --- NAVEGAÇÃO E MODAIS ---
+        window.switchTab = (tabId) => {
             state.activeTab = tabId;
             render();
-        }
+        };
 
-        function toggleScanModal(show) {
+        window.toggleScanModal = (show) => {
             const modal = document.getElementById('modal-scan');
             modal.classList.toggle('hidden', !show);
-        }
+        };
 
-        function toggleCheckoutModal(show, osId = null) {
+        window.toggleCheckoutModal = (show, osId = null) => {
             const modal = document.getElementById('modal-checkout');
             if (show) {
                 const os = state.osAtivas.find(o => o.id === osId);
@@ -244,7 +223,7 @@
                 
                 document.getElementById('checkout-os-id').innerText = `Fecho de O.S. #${os.id}`;
                 document.getElementById('checkout-content').innerHTML = `
-                    <div class="space-y-3">
+                    <div class="space-y-3 text-center">
                         <div class="flex justify-between text-zinc-400 text-sm font-medium">
                             <span>Peças e Insumos</span>
                             <span class="font-mono text-white">R$ ${os.pecas.toFixed(2)}</span>
@@ -289,19 +268,147 @@
             } else {
                 modal.classList.add('hidden');
             }
-        }
+        };
 
-        function finalizarOS(osId) {
+        window.finalizarOS = (osId) => {
             state.osAtivas = state.osAtivas.filter(o => o.id !== osId);
-            toggleCheckoutModal(false);
+            window.toggleCheckoutModal(false);
             render();
-        }
+        };
 
         // --- RENDERIZADORES ---
         function render() {
+            const root = document.getElementById('app-root');
+            if (!state.isLoggedIn) {
+                root.innerHTML = renderLogin();
+            } else {
+                root.innerHTML = renderAppStructure();
+                renderTabContent();
+            }
+            lucide.createIcons();
+        }
+
+        function renderLogin() {
+            return `
+                <div class="min-h-screen login-bg flex items-center justify-center p-6">
+                    <div class="w-full max-w-md bg-zinc-900/50 backdrop-blur-xl p-10 rounded-[2.5rem] border border-zinc-800 shadow-2xl">
+                        <div class="text-center mb-10">
+                            <div class="bg-white/5 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl border border-white/10">
+                                <img src="${state.logoUrl}" alt="Logo G3" class="w-12 h-12 logo-img">
+                            </div>
+                            <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Oficina G3</h2>
+                            <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-2 italic">Management System</p>
+                        </div>
+
+                        <form onsubmit="handleLogin(event)" class="space-y-6">
+                            <div>
+                                <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Usuário ou E-mail</label>
+                                <input id="login-user" type="text" required placeholder="Ex: edmotos" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Senha</label>
+                                <input id="login-pass" type="password" required placeholder="••••••••" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none transition-colors">
+                            </div>
+                            <button id="btn-login" type="submit" class="w-full bg-red-600 text-white font-black py-5 rounded-3xl active:scale-95 transition-all shadow-xl shadow-red-900/40 uppercase text-sm tracking-[0.2em]">
+                                Entrar no Sistema
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAppStructure() {
+            return `
+                <div class="flex min-h-screen">
+                    <aside class="hidden md:flex flex-col w-64 bg-zinc-900 border-r border-zinc-800 h-screen sticky top-0">
+                        <div class="p-6 border-b border-zinc-800 flex items-center gap-3">
+                            <div class="bg-white/5 p-1.5 rounded-lg border border-white/10">
+                                <img src="${state.logoUrl}" alt="Logo" class="w-6 h-6 logo-img">
+                            </div>
+                            <h1 class="text-lg font-bold italic uppercase tracking-tighter text-white">${state.nomeOficina}</h1>
+                        </div>
+                        <nav class="flex-1 p-4 space-y-1">
+                            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                                <span class="text-sm font-bold">Painel de Controle</span>
+                            </button>
+                            <button onclick="switchTab('os')" id="nav-os" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                                <span class="text-sm font-bold">Ordens de Serviço</span>
+                            </button>
+                            <button onclick="switchTab('equipe')" id="nav-equipe" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <i data-lucide="hard-hat" class="w-4 h-4"></i>
+                                <span class="text-sm font-bold">Equipe & Comissões</span>
+                            </button>
+                            <button onclick="switchTab('estoque')" id="nav-estoque" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <i data-lucide="package" class="w-4 h-4"></i>
+                                <span class="text-sm font-bold">Estoque & Lucro</span>
+                            </button>
+                            <button onclick="switchTab('print')" id="nav-print" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                <span class="text-sm font-bold">Imprimir Checklist</span>
+                            </button>
+                            <div class="pt-4 mt-4 border-t border-zinc-800">
+                                <button onclick="switchTab('config')" id="nav-config" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:bg-zinc-800 transition-all">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                    <span class="text-sm font-bold">Configurações</span>
+                                </button>
+                                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-700 hover:text-red-500 transition-all">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    <span class="text-sm font-bold">Sair</span>
+                                </button>
+                            </div>
+                        </nav>
+                    </aside>
+
+                    <div class="flex-1 flex flex-col min-w-0">
+                        <header class="md:hidden bg-zinc-900 text-white p-5 flex justify-between items-center border-b border-zinc-800 sticky top-0 z-30">
+                            <div class="flex items-center gap-3">
+                                <img src="${state.logoUrl}" alt="Logo" class="w-6 h-6 logo-img">
+                                <h1 class="text-md font-black italic uppercase tracking-tighter">${state.nomeOficina}</h1>
+                            </div>
+                            <button onclick="switchTab('config')" class="p-2.5 bg-zinc-800 rounded-2xl text-zinc-400">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
+                            </button>
+                        </header>
+
+                        <main id="main-content" class="flex-1 custom-scrollbar overflow-y-auto">
+                            <!-- Injected by renderTabContent -->
+                        </main>
+
+                        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-lg border-t border-zinc-800 flex justify-around p-4 pb-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+                            <button onclick="switchTab('dashboard')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-dashboard">
+                                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                <span class="text-[8px] font-black uppercase tracking-tighter">Painel</span>
+                            </button>
+                            <button onclick="switchTab('equipe')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-equipe">
+                                <i data-lucide="hard-hat" class="w-5 h-5"></i>
+                                <span class="text-[8px] font-black uppercase tracking-tighter">Equipe</span>
+                            </button>
+                            <div class="relative">
+                                <button onclick="toggleScanModal(true)" class="bg-red-600 text-white p-4 rounded-[1.5rem] -mt-10 border-8 border-zinc-950 shadow-2xl active:scale-90 transition-transform">
+                                    <i data-lucide="camera" class="w-6 h-6"></i>
+                                </button>
+                            </div>
+                            <button onclick="switchTab('estoque')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-estoque">
+                                <i data-lucide="package" class="w-5 h-5"></i>
+                                <span class="text-[8px] font-black uppercase tracking-tighter">Peças</span>
+                            </button>
+                            <button onclick="switchTab('config')" class="mobile-nav-item flex flex-col items-center gap-1 text-zinc-600" id="m-nav-config">
+                                <i data-lucide="settings" class="w-5 h-5"></i>
+                                <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTabContent() {
             const content = document.getElementById('main-content');
-            
-            // Atualizar UI de Navegação
+            if (!content) return;
+
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('tab-active'));
             document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('mobile-tab-active'));
             
@@ -393,27 +500,6 @@
                                 </div>
                             </section>
                         </div>
-
-                        <div class="space-y-6">
-                            <section class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-xl">
-                                <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest mb-6 italic">Revisões Alvo</h3>
-                                <div class="space-y-4">
-                                    ${state.revisoes.map(rev => `
-                                        <div class="flex justify-between items-center bg-zinc-950/50 p-3 rounded-2xl border border-zinc-800">
-                                            <div>
-                                                <p class="text-xs font-bold">${rev.modelo}</p>
-                                                <p class="text-[9px] text-zinc-500 uppercase font-black">${rev.status}</p>
-                                            </div>
-                                            <button class="text-green-500 p-2 bg-green-500/10 rounded-lg"><i data-lucide="message-circle" class="w-4 h-4"></i></button>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </section>
-                            <div class="bg-gradient-to-br from-zinc-800 to-zinc-900 p-6 rounded-3xl border border-zinc-700">
-                                <h3 class="text-white font-black italic uppercase text-xs mb-2">Sacada G3</h3>
-                                <p class="text-zinc-500 text-[10px] leading-relaxed">Ofereça revisão geral a cada 6 meses. O faturamento aumenta 30%.</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -421,15 +507,11 @@
 
         function renderEquipe() {
             return `
-                <div class="p-4 md:p-8 space-y-8 max-w-5xl mx-auto animate-in slide-in-from-bottom-4">
+                <div class="p-4 md:p-8 space-y-8 max-w-5xl mx-auto">
                     <div class="flex justify-between items-center">
                         <div>
                             <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Equipe & Comissões</h2>
-                            <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Gestão de produtividade</p>
                         </div>
-                        <button class="bg-red-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-xs font-black uppercase tracking-widest shadow-lg shadow-red-900/20">
-                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Novo Mecânico
-                        </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${state.equipe.map(m => `
@@ -439,7 +521,7 @@
                                     <div><h3 class="font-black text-white">${m.nome}</h3><p class="text-[10px] text-zinc-500 uppercase font-bold">${m.especialidade}</p></div>
                                 </div>
                                 <div class="space-y-4">
-                                    <div class="flex justify-between text-xs"><span class="text-zinc-500 font-bold uppercase">Taxa (%)</span><span class="text-white font-black">${m.taxa}% M.O.</span></div>
+                                    <div class="flex justify-between text-xs"><span class="text-zinc-500 font-bold uppercase">Taxa</span><span class="text-white font-black">${m.taxa}%</span></div>
                                     <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
                                         <div><p class="text-[10px] text-zinc-600 font-black uppercase">Produção</p><p class="text-lg font-black text-white">R$ ${m.produzidos}</p></div>
                                         <div class="text-right"><p class="text-[10px] text-zinc-600 font-black uppercase text-emerald-500">A Pagar</p><p class="text-lg font-black text-emerald-500">R$ ${(m.produzidos * (m.taxa/100)).toFixed(2)}</p></div>
@@ -457,18 +539,16 @@
                 <div class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto">
                     <div>
                         <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Stock & Markup</h2>
-                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider text-emerald-500 italic">Maximize seu lucro por peça</p>
                     </div>
                     <div class="bg-zinc-900 rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-zinc-950 text-zinc-600 uppercase text-[10px] font-black border-b border-zinc-800">
-                                <tr><th class="p-5">Peça</th><th class="p-5">Custo</th><th class="p-5">Venda</th><th class="p-5 text-center">Quantidade</th></tr>
+                                <tr><th class="p-5">Peça</th><th class="p-5">Venda</th><th class="p-5 text-center">Quantidade</th></tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-800">
                                 ${state.estoque.map(item => `
                                     <tr class="hover:bg-zinc-800/30">
                                         <td class="p-5 font-bold text-zinc-200">${item.item}</td>
-                                        <td class="p-5 text-zinc-500 font-mono">R$ ${item.custo.toFixed(2)}</td>
                                         <td class="p-5 font-black text-emerald-500 font-mono">R$ ${item.venda.toFixed(2)}</td>
                                         <td class="p-5 text-center">
                                             <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.qtd < 10 ? 'bg-red-500/10 text-red-500' : 'bg-zinc-800 text-zinc-400'}">${item.qtd} UN</span>
@@ -489,8 +569,7 @@
                         <div class="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
                         <i data-lucide="printer" class="mx-auto text-zinc-700 w-12 h-12 mb-6"></i>
                         <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Guia de Entrada G3</h2>
-                        <p class="text-zinc-500 text-sm mt-4 max-w-md mx-auto leading-relaxed">Imprima o checklist oficial. O mecânico marca com o "X" e você digitaliza com a câmera do celular.</p>
-                        <button class="mt-8 bg-white text-black font-black py-4 px-12 rounded-2xl hover:bg-zinc-200 uppercase text-sm tracking-widest shadow-xl active:scale-95 transition-all">Gerar Modelo PDF</button>
+                        <button class="mt-8 bg-white text-black font-black py-4 px-12 rounded-2xl hover:bg-zinc-200 uppercase text-sm tracking-widest shadow-xl">Imprimir Modelo</button>
                     </div>
                 </div>
             `;
@@ -499,17 +578,22 @@
         function renderConfig() {
             return `
                 <div class="p-8 space-y-8 max-w-xl mx-auto">
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Definições</h2>
+                    <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Ajustes</h2>
                     <div class="bg-zinc-900 p-8 rounded-[2rem] border border-zinc-800 space-y-6 shadow-xl">
                         <div>
-                            <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Nome Comercial</label>
-                            <input type="text" value="${state.nomeOficina}" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none">
+                            <label class="text-[10px] text-zinc-600 uppercase font-black tracking-widest block mb-2">Oficina</label>
+                            <input id="config-nome" type="text" value="${state.nomeOficina}" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-white font-bold focus:border-red-600 outline-none">
                         </div>
-                        <button class="w-full bg-zinc-800 text-white font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Guardar Alterações</button>
+                        <button onclick="window.saveConfig()" class="w-full bg-zinc-800 text-white font-black py-4 rounded-2xl uppercase text-xs tracking-widest">Salvar</button>
                     </div>
                 </div>
             `;
         }
+
+        window.saveConfig = () => {
+            state.nomeOficina = document.getElementById('config-nome').value;
+            render();
+        };
 
         // --- INIT ---
         window.onload = () => {
