@@ -359,6 +359,59 @@
         </div>
     </div>
 
+    <!-- Modal: Novo/Editar Mecânico -->
+    <div id="modal-mecanico" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-lg rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl">
+            <div class="p-8 border-b border-zinc-800 bg-zinc-900/50 flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-black text-xl uppercase italic tracking-tighter" id="mecanico-modal-title">Novo Mecânico</h3>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Cadastro de Equipe</p>
+                </div>
+                <button onclick="window.toggleMecanicoModal(false)" class="text-zinc-500 text-xl font-bold">✕</button>
+            </div>
+            
+            <form onsubmit="window.saveMecanico(event)" class="p-8 space-y-4">
+                <input type="hidden" id="mec-id" value="">
+                <div>
+                    <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Nome</label>
+                    <input id="mec-nome" type="text" required placeholder="Ex: Carlos Silva" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Especialidade</label>
+                        <input id="mec-especialidade" type="text" placeholder="Ex: Motor, Elétrica, Geral..." class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-600 uppercase font-black block mb-1">Taxa de Comissão (%)</label>
+                        <input id="mec-taxa" type="number" step="0.1" required placeholder="Ex: 40" class="w-full bg-zinc-950 border border-zinc-800 rounded-[10px] p-3 text-white font-bold outline-none focus:border-red-600">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 text-white font-black py-4 rounded-[10px] uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20 active:scale-95 transition-all mt-4">
+                    Salvar Mecânico
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão de Mecânico -->
+    <div id="modal-delete-mecanico" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-sm rounded-[10px] border border-zinc-800 overflow-hidden shadow-2xl p-6 text-center space-y-6">
+            <div class="mx-auto w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="user-minus" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-white font-black text-lg uppercase italic tracking-tighter mb-2">Excluir Mecânico?</h3>
+                <p class="text-zinc-500 text-xs font-bold" id="delete-mecanico-text"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.closeDeleteMecanicoModal()" class="bg-zinc-800 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-zinc-700 transition-colors">Cancelar</button>
+                <button onclick="window.confirmDeleteMecanico()" class="bg-red-600 text-white font-black py-3 rounded-[10px] uppercase text-[10px] tracking-widest hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -824,6 +877,81 @@
             }
         };
 
+        // --- LÓGICA DE MECÂNICOS ---
+        window.toggleMecanicoModal = (show, mecanicoId = null) => {
+            const modal = document.getElementById('modal-mecanico');
+            if (show) {
+                const isEdit = mecanicoId !== null;
+                document.getElementById('mecanico-modal-title').innerText = isEdit ? 'Editar Mecânico' : 'Novo Mecânico';
+                
+                if (isEdit) {
+                    const m = state.equipe.find(x => x.id == mecanicoId);
+                    document.getElementById('mec-id').value = m.id;
+                    document.getElementById('mec-nome').value = m.nome;
+                    document.getElementById('mec-especialidade').value = m.especialidade || '';
+                    document.getElementById('mec-taxa').value = m.taxa || 0;
+                } else {
+                    document.getElementById('mec-id').value = '';
+                    document.getElementById('mec-nome').value = '';
+                    document.getElementById('mec-especialidade').value = 'Geral';
+                    document.getElementById('mec-taxa').value = '40';
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        };
+
+        window.saveMecanico = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('mec-id').value;
+            const nome = document.getElementById('mec-nome').value;
+            const especialidade = document.getElementById('mec-especialidade').value;
+            const taxa = parseFloat(document.getElementById('mec-taxa').value) || 0;
+
+            if (id) {
+                const m = state.equipe.find(x => x.id == id);
+                if (m) {
+                    m.nome = nome; 
+                    m.especialidade = especialidade; 
+                    m.taxa = taxa;
+                    m.comissaoAtiva = taxa > 0;
+                }
+            } else {
+                state.equipe.push({
+                    id: Date.now(), 
+                    nome, 
+                    especialidade, 
+                    comissaoAtiva: taxa > 0, 
+                    taxa, 
+                    produzidos: 0
+                });
+            }
+            window.toggleMecanicoModal(false);
+            render();
+        };
+
+        let mecanicoToDelete = null;
+
+        window.promptDeleteMecanico = (id, nome) => {
+            mecanicoToDelete = id;
+            document.getElementById('delete-mecanico-text').innerText = `Mecânico: ${nome}`;
+            document.getElementById('modal-delete-mecanico').classList.remove('hidden');
+        };
+
+        window.closeDeleteMecanicoModal = () => {
+            mecanicoToDelete = null;
+            document.getElementById('modal-delete-mecanico').classList.add('hidden');
+        };
+
+        window.confirmDeleteMecanico = () => {
+            if (mecanicoToDelete) {
+                state.equipe = state.equipe.filter(m => m.id != mecanicoToDelete);
+                render();
+                closeDeleteMecanicoModal();
+            }
+        };
+
         // --- NAVEGAÇÃO E MODAIS SECUNDÁRIOS ---
         window.switchTab = (tabId) => {
             state.activeTab = tabId;
@@ -840,7 +968,10 @@
             if (show) {
                 const os = state.osAtivas.find(o => o.id === osId);
                 const mecanico = state.equipe.find(m => m.id === os.mecanicoId);
-                const comissaoVal = os.maoDeObra * (mecanico.taxa / 100);
+                // Se o mecânico foi excluído no meio do processo, evitar erro
+                const taxa = mecanico ? mecanico.taxa : 0;
+                const nomeMecanico = mecanico ? mecanico.nome : "Não atribuído";
+                const comissaoVal = os.maoDeObra * (taxa / 100);
                 
                 document.getElementById('checkout-os-id').innerText = `Fecho de O.S. #${os.id}`;
                 document.getElementById('checkout-content').innerHTML = `
@@ -850,7 +981,7 @@
                             <span class="font-mono text-white">R$ ${os.pecas.toFixed(2)}</span>
                         </div>
                         <div class="flex justify-between text-zinc-400 text-sm font-medium">
-                            <span>Mão de Obra (${mecanico.nome})</span>
+                            <span>Mão de Obra (${nomeMecanico})</span>
                             <span class="font-mono text-white">R$ ${os.maoDeObra.toFixed(2)}</span>
                         </div>
                         <div class="flex justify-between items-center pt-4 border-t border-zinc-800">
@@ -861,7 +992,7 @@
                     <div class="bg-zinc-950 p-4 rounded-[10px] border border-zinc-800 space-y-2 text-center">
                         <p class="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-2 italic">Repartição G3</p>
                         <div class="flex justify-between text-[10px] font-bold">
-                            <span class="text-zinc-500 uppercase">COMISSÃO MECÂNICO (${mecanico.taxa}%):</span>
+                            <span class="text-zinc-500 uppercase">COMISSÃO MECÂNICO (${taxa}%):</span>
                             <span class="text-orange-500">R$ ${comissaoVal.toFixed(2)}</span>
                         </div>
                         <div class="flex justify-between text-[10px] font-bold">
@@ -1322,24 +1453,29 @@
 
         function renderEquipe() {
             return `
-                <div class="p-4 md:p-8 space-y-8 max-w-5xl mx-auto">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Equipe & Comissões</h2>
-                        </div>
+                <div class="p-4 md:p-8 space-y-8 max-w-5xl mx-auto animate-in fade-in duration-500">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <h2 class="text-2xl font-black italic uppercase tracking-tighter text-white">Equipe & Comissões</h2>
+                        <button onclick="window.toggleMecanicoModal(true)" class="w-full md:w-auto bg-red-600 text-white px-6 py-3 rounded-[10px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-900/20">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Novo Mecânico
+                        </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${state.equipe.map(m => `
-                            <div class="bg-zinc-900 p-6 rounded-[10px] border border-zinc-800 relative shadow-lg">
+                            <div class="bg-zinc-900 p-6 rounded-[10px] border border-zinc-800 relative shadow-lg group">
+                                <div class="absolute top-4 right-4 flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                    <button onclick="window.toggleMecanicoModal(true, ${m.id})" class="text-zinc-400 hover:text-white bg-zinc-950 p-2 rounded-[10px] border border-zinc-800 transition-colors"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                    <button onclick="window.promptDeleteMecanico(${m.id}, '${m.nome}')" class="text-zinc-400 hover:text-red-500 bg-zinc-950 p-2 rounded-[10px] border border-zinc-800 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </div>
                                 <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-12 h-12 bg-zinc-800 rounded-[10px] flex items-center justify-center text-zinc-400 border border-zinc-700 font-black">${m.nome.charAt(0)}</div>
-                                    <div><h3 class="font-black text-white">${m.nome}</h3><p class="text-[10px] text-zinc-500 uppercase font-bold">${m.especialidade}</p></div>
+                                    <div class="w-12 h-12 bg-zinc-800 rounded-[10px] flex items-center justify-center text-zinc-400 border border-zinc-700 font-black text-xl">${m.nome.charAt(0)}</div>
+                                    <div><h3 class="font-black text-white pr-16">${m.nome}</h3><p class="text-[10px] text-zinc-500 uppercase font-bold">${m.especialidade}</p></div>
                                 </div>
                                 <div class="space-y-4">
                                     <div class="flex justify-between text-xs"><span class="text-zinc-500 font-bold uppercase">Taxa</span><span class="text-white font-black">${m.taxa}%</span></div>
                                     <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
-                                        <div><p class="text-[10px] text-zinc-600 font-black uppercase">Produção</p><p class="text-lg font-black text-white">R$ ${m.produzidos}</p></div>
-                                        <div class="text-right"><p class="text-[10px] text-zinc-600 font-black uppercase text-emerald-500">A Pagar</p><p class="text-lg font-black text-emerald-500">R$ ${(m.produzidos * (m.taxa/100)).toFixed(2)}</p></div>
+                                        <div><p class="text-[10px] text-zinc-600 font-black uppercase">Produção</p><p class="text-lg font-black text-white">R$ ${(m.produzidos || 0).toFixed(2)}</p></div>
+                                        <div class="text-right"><p class="text-[10px] text-zinc-600 font-black uppercase text-emerald-500">A Pagar</p><p class="text-lg font-black text-emerald-500">R$ ${((m.produzidos || 0) * (m.taxa/100)).toFixed(2)}</p></div>
                                     </div>
                                 </div>
                             </div>
